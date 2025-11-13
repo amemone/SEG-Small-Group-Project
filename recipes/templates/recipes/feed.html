@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test</title>
+</head>
+
+<body>
+    <h1>HELLO WORLD - FEED PAGE</h1>
+    <p>Recipe count: {{ recipes|length }}</p>
+
+    {% if recipes %}
+    <ul>
+        {% for recipe in recipes %}
+        <li>{{ recipe.title }} - {{ recipe.description }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>NO RECIPES FOUND</p>
+    {% endif %}
+</body>
+
+</html>
+<!DOCTYPE html>
+<html>

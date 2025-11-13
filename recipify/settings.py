@@ -141,3 +141,6 @@ REDIRECT_URL_WHEN_LOGGED_IN = 'dashboard'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# URL to redirect after a recipe was created
+REDIRECT_URL_WHEN_RECIPE_IS_CREATED = 'feed'
