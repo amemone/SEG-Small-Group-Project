@@ -1,25 +1,35 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Recipe Feed</h1>
+                <a href="{% url 'recipe_create' %}" class="btn btn-primary">New Recipe</a>
+            </div>
 
-<head>
-    <title>Test</title>
-</head>
-
-<body>
-    <h1>HELLO WORLD - FEED PAGE</h1>
-    <p>Recipe count: {{ recipes|length }}</p>
-
-    {% if recipes %}
-    <ul>
-        {% for recipe in recipes %}
-        <li>{{ recipe.title }} - {{ recipe.description }}</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>NO RECIPES FOUND</p>
-    {% endif %}
-</body>
-
-</html>
-<!DOCTYPE html>
-<html>
+            {% if recipes %}
+            {% for recipe in recipes %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ recipe.title }}</h5>
+                    <p class="card-text">{{ recipe.description }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            By {{ recipe.user.first_name }} {{ recipe.user.last_name }} on {{
+                            recipe.publication_date|date:"M d, Y" }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info text-center">
+                <p class="mb-2">No recipes yet!</p>
+                <a href="{% url 'recipe_create' %}" class="btn btn-primary">Create the First Recipe</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
