@@ -10,9 +10,14 @@
     <div class="col-12">
       <h2>My Recipes</h2>
 
-      {% if recipes %}
-      {% include 'recipes/recipe_card.html' %}
-
+      {% if recipes.exists %}
+        <div class = "row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          {% for recipe in recipes %}
+            <div class = "col">
+              {% include 'recipes/recipe_card.html' with recipe=recipe %}
+            </div>
+          {% endfor %}
+        </div>
       {% else %}
       <div class="alert alert-info">
         <p class="mb-2">You haven't created any recipes yet.</p>

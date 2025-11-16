@@ -8,13 +8,15 @@ def recipe_browse_view(request):
     """
     query = request.GET.get('q','')
 
+    query = query.strip()
+
     if query:
         recipes = Recipe.objects.filter(
             Q(title__icontains = query) |
             Q(description__icontains = query)
         ).order_by('-publication_date').distinct()
     else:
-        recipes = Recipe.objects.all().order_by('-publication_date').distinct()
+        recipes = Recipe.objects.none()
 
     return render(request, 'recipes/recipe_browse.html', {
         'recipes': recipes,
