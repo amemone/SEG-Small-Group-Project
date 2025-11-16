@@ -1,0 +1,44 @@
+{% extends "base_content.html" %}
+{% block content %}
+
+<div class = "container">
+    <div class = "row mb-4">
+        <div class = "col-12 d-flex justify-content-between align-items-center">
+            <h1>Browse Recipes</h1>
+            <a href = "{% url 'feed' %}" class = "btn btn-secondary">← Back to Feed</a>
+        </div>
+
+        <form method = "get" action = "{%url 'recipe_browse' %}">
+            <input
+                type = "text"
+                name = "q"
+                placeholder = "Search for a recipe..."
+                value = "{{query}}"
+                style = "padding: 5px; width: 250px"
+            />
+            <button
+                type = "submit"
+                style = "padding: 5px"
+            >Search </button>
+        </form>
+    </div>
+
+
+    <hr>
+
+    {% if recipes %}
+        <div class = "row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for recipe in recipes %}
+            <div class = "col">
+                {% include 'recipes/recipe_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class = "text-center py-5">
+            <p class = "lead text-muted">No recipes found.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
