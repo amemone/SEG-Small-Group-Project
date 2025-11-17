@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from .follows import Follows
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -40,3 +41,25 @@ class User(AbstractUser):
         """Return a URL to a miniature version of the user's gravatar."""
         
         return self.gravatar(size=60)
+    
+    def follow(self, user):
+        if self == user:
+            raise ValueError("Cannot follow yourself.")
+        
+        if not self.is_following(user):
+            Follows.objects.create(
+                follower = self,
+                followed = user
+            )
+    
+    def unfollow(self, user):
+        Follows.objects.filter(
+            follower = self,
+            followed = user
+        ).delete()
+
+    def is_following(self, user):
+        return Follows.objects.filter(
+             follower = self,
+             followed = user
+        ).exists()
