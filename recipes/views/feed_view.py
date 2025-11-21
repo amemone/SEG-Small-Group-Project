@@ -6,16 +6,10 @@ from recipes.models.recipes import Recipe
 
 @login_required
 def feed_view(request):
-    # Quick test - does this show anything?
-    # return HttpResponse("<h1>TEST - If you see this, the view works!</h1>")
-
-    recipes = Recipe.objects.all().select_related(
-        'user').order_by('-publication_date')
-    print(f"\n=== DEBUG INFO ===")
-    print(f"Found {recipes.count()} recipes")
-    print(f"User: {request.user.username}")
-    print(f"==================\n")
-
+    print("ALL RECIPES IN DATABASE:")
+    for r in Recipe.objects.all():
+        print(r.title, "| user:", r.user.username)
+    recipes = Recipe.objects.all().order_by('-publication_date')
     context = {
         'recipes': recipes,
     }

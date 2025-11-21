@@ -15,11 +15,11 @@ class Recipe(models.Model):
     """
 
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000)
-    # Changed to DateTimeField with default
+    description = models.CharField(max_length=100000)
     publication_date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes')
+    id = models.AutoField(primary_key=True)
 
     class Meta:
         """Model options."""
