@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from recipes import views
 from recipes.views.feed_view import feed_view
+from recipes.views.follow_view import follow_user, unfollow_user
 from recipes.views.recipe_create_view import recipe_create_view
 
 urlpatterns = [
@@ -33,6 +34,8 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('feed/', feed_view, name='feed'),
     path('recipe/create/', recipe_create_view, name='recipe_create'),
+    path('follow/<str:username>/', follow_user, name='follow'),
+    path('unfollow/<str:username>/', unfollow_user, name='unfollow')
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
