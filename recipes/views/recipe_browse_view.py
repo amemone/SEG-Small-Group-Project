@@ -13,7 +13,10 @@ def recipe_browse_view(request):
     if query:
         recipes = Recipe.objects.filter(
             Q(title__icontains = query) |
-            Q(description__icontains = query)
+            Q(description__icontains = query) |
+            Q(publication_date__icontains = query) |
+            Q(user__icontains = query)
+
         ).order_by('-publication_date').distinct()
     else:
         recipes = Recipe.objects.none()
