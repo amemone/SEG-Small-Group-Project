@@ -1,0 +1,11 @@
+[
+{
+  "model": "recipes.follow",
+  "pk": 1,
+  "fields": {
+    "follower": 1,
+    "followee": 2,
+    "date_followed": "2025-11-24T12:40:11.556Z"
+  }
+}
+]

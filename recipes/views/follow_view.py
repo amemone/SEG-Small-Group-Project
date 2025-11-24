@@ -6,6 +6,12 @@ from recipes.models.follow import Follow
 
 @login_required
 def follow_user(request, username):
+    """
+    Attempts to follow a user.
+
+    Fails if the followed user does not exist, user tries to follow themselves,
+    or if the user is already followed.
+    """
     try:
         followed_user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -26,6 +32,12 @@ def follow_user(request, username):
 
 @login_required
 def unfollow_user(request, username):
+    """
+    Attempts to unfollow a user.
+
+    Fails if the unfollowed user does not exist, user tries to unfollow themselves,
+    or if user is already not followed.
+    """
     try:
         unfollowed_user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -45,4 +57,9 @@ def unfollow_user(request, username):
     return redirect("dashboard")
 
 def check_if_following(follower, followee):
+    """
+    Checks if a user is following another user.
+
+    Returns a boolean.
+    """
     return Follow.objects.filter(follower=follower, followee=followee).exists()
