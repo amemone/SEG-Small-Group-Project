@@ -16,6 +16,10 @@ def follow_user(request, username):
         messages.error(request, "Cannot follow yourself.")
         return redirect("dashboard")
 
+    if check_if_following(request.user, followed_user):
+        messages.error(request, "You are already following this user.")
+        return redirect("dashboard")
+
     Follow.objects.get_or_create(follower=request.user, followee=followed_user)
     messages.success(request, f"You are now following {username}.")
     return redirect("dashboard")
@@ -32,6 +36,13 @@ def unfollow_user(request, username):
         messages.error(request, "Cannot unfollow yourself.")
         return redirect("dashboard")
 
-    Follow.objects.filter(follower=request.user, followee=unfollowed_user).delete()
-    messages.success(request, f"You have unfollowed {username}")
+    if check_if_following(request.user, unfollowed_user):
+        Follow.objects.filter(follower=request.user, followee=unfollowed_user).delete()
+        messages.success(request, f"You have unfollowed {username}.")
+        return redirect("dashboard")
+
+    messages.error(request, f"You are not following {username}.")
     return redirect("dashboard")
+
+def check_if_following(follower, followee):
+    return Follow.objects.filter(follower=follower, followee=followee).exists()
