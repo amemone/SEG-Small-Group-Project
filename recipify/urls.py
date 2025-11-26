@@ -20,7 +20,8 @@ from django.contrib import admin
 from django.urls import path
 from recipes import views
 from recipes.views.feed_view import feed_view
-from recipes.views.follow_view import follow_user, unfollow_user
+from recipes.views.follow_view import follow_user
+from recipes.views.unfollow_view import unfollow_user
 from recipes.views.recipe_create_view import recipe_create_view
 
 urlpatterns = [

@@ -7,29 +7,29 @@ from django.shortcuts import render
 from recipes.models.recipes import Recipe
 
 @login_required
-def follow_user(request, username):
+def unfollow_user(request, username):
     """
-    Attempts to follow a user.
+    Attempts to unfollow a user.
 
-    Fails if the followed user does not exist, user tries to follow themselves,
-    or if the user is already followed.
+    Fails if the unfollowed user does not exist, user tries to unfollow themselves,
+    or if user is already not followed.
     """
     try:
-        followed_user = User.objects.get(username=username)
+        unfollowed_user = User.objects.get(username=username)
     except User.DoesNotExist:
         messages.error(request, "User not found.")
         return redirect("dashboard")
 
-    if followed_user == request.user:
-        messages.error(request, "Cannot follow yourself.")
+    if unfollowed_user == request.user:
+        messages.error(request, "Cannot unfollow yourself.")
         return redirect("dashboard")
 
-    if check_if_following(request.user, followed_user):
-        messages.error(request, "You are already following this user.")
+    if check_if_following(request.user, unfollowed_user):
+        Follow.objects.filter(follower=request.user, followee=unfollowed_user).delete()
+        messages.success(request, f"You have unfollowed {username}.")
         return redirect("dashboard")
 
-    Follow.objects.get_or_create(follower=request.user, followee=followed_user)
-    messages.success(request, f"You are now following {username}.")
+    messages.error(request, f"You are not following {username}.")
     return redirect("dashboard")
 
 def check_if_following(follower, followee):
