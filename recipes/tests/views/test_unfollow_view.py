@@ -16,15 +16,15 @@ class FollowViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.unfollow_url = reverse('unfollow', args=['@janedoe'])
+        self.unfollow_url = reverse('unfollow_user', args=['@janedoe'])
         self.user = User.objects.get(username='@johndoe')
         self.second_user = User.objects.get(username='@janedoe')
         self.third_user = User.objects.get(username='@petrapickles')
         self.client.login(username='@johndoe', password="Password123")
 
     def _unfollow_and_check_response(self, username, message):
-        response = self.client.get(reverse('unfollow', args=[username]))
-        self.assertRedirects(response, reverse('dashboard'))
+        response = self.client.get(reverse('unfollow_user', args=[username]))
+        self.assertRedirects(response, reverse('unfollow'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), message)
@@ -54,7 +54,7 @@ class FollowViewTestCase(TestCase):
 
     def test_unfollow_user_requires_login(self):
         self.client.logout()
-        attempt_unfollow_url = reverse('unfollow', args=[self.third_user.username])
+        attempt_unfollow_url = reverse('unfollow_user', args=[self.third_user.username])
         response = self.client.get(attempt_unfollow_url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/log_in/?next={attempt_unfollow_url}')

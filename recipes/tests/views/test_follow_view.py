@@ -16,15 +16,15 @@ class FollowViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.follow_url = reverse('follow', args=['@janedoe'])
+        self.follow_url = reverse('follow_user', args=['@janedoe'])
         self.user = User.objects.get(username='@johndoe')
         self.second_user = User.objects.get(username='@janedoe')
         self.third_user = User.objects.get(username='@petrapickles')
         self.client.login(username='@johndoe', password="Password123")
 
     def _follow_and_check_response(self, username, message):
-        response = self.client.get(reverse('follow', args=[username]))
-        self.assertRedirects(response, reverse('dashboard'))
+        response = self.client.get(reverse('follow_user', args=[username]))
+        self.assertRedirects(response, reverse('follow'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), message)
@@ -56,7 +56,7 @@ class FollowViewTestCase(TestCase):
 
     def test_follow_user_requires_login(self):
         self.client.logout()
-        attempt_follow_url = reverse('follow', args=[self.third_user.username])
+        attempt_follow_url = reverse('follow_user', args=[self.third_user.username])
         response = self.client.get(attempt_follow_url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/log_in/?next={attempt_follow_url}')
