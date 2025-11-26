@@ -23,6 +23,7 @@ from recipes.views.feed_view import feed_view
 from recipes.views.recipe_create_view import recipe_create_view
 from recipes.views.recipe_browse_view import recipe_browse_view
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -35,6 +36,9 @@ urlpatterns = [
     path('feed/', feed_view, name='feed'),
     path('recipe/create/', recipe_create_view, name='recipe_create'),
     path('recipes/browse/', recipe_browse_view, name='recipe_browse'),
+    path('recipes/delete/', views.RecipeDeleteView.as_view(), name='recipe_delete'),
+
+
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

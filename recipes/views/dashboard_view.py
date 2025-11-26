@@ -23,4 +23,8 @@ def dashboard(request):
     current_user = request.user
     user_recipes = Recipe.objects.filter(
         user=current_user).order_by('-publication_date')
-    return render(request, 'dashboard.html', {'user': current_user, 'recipes': user_recipes})
+    return render(request, 'dashboard.html', {
+        'user': current_user,
+        'recipes': user_recipes,
+        'show_delete': True,
+    })
