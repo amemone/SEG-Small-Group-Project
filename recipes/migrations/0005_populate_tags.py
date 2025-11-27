@@ -19,7 +19,7 @@ def create_tags(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0004_tag_recipe_tags'),
+        ('recipes', '0006_tag_recipe_tags'),
     ]
 
     operations = [
