@@ -1,17 +1,22 @@
 from django import forms
 from recipes.models.recipes import Recipe  # Changed from recepies
-
+from recipes.models.recipes import Tag
 
 class RecipeForm(forms.ModelForm):
     """
     Form for creating and updating recipes.
     """
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
 
     class Meta:
         """Form options."""
 
         model = Recipe
-        fields = ['title', 'description']
+        fields = ['title', 'description', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -22,6 +27,7 @@ class RecipeForm(forms.ModelForm):
                 'placeholder': 'Describe your recipe...',
                 'rows': 6
             }),
+            'tags': forms.CheckboxSelectMultiple()
         }
         labels = {
             'title': 'Recipe Title',

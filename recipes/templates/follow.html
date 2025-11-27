@@ -1,0 +1,22 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Follow User</h1>
+        <form method="get" action="{% url 'follow' %}">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Enter user..."
+                       name="username"
+                       aria-label="Username"
+                       required>
+                <button class="btn btn-primary" type="submit">Follow</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

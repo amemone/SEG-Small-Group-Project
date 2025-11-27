@@ -15,6 +15,7 @@ def recipe_create_view(request):
             recipe = form.save(commit=False)
             recipe.user = request.user
             recipe.save()
+            form.save_m2m() 
             messages.success(request, 'Recipe created successfully!')
             return redirect('feed')
         else:
