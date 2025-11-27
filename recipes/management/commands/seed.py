@@ -10,9 +10,10 @@ is swallowed and generation continues.
 
 
 from faker import Faker
-from random import randint, random
+from random import randint, random, sample
 from django.core.management.base import BaseCommand, CommandError
 from recipes.models import User
+from recipes.models import Follow
 
 
 user_fixtures = [
@@ -33,12 +34,14 @@ class Command(BaseCommand):
     Attributes:
         USER_COUNT (int): Target total number of users in the database.
         DEFAULT_PASSWORD (str): Default password assigned to all created users.
+        NUMBER_OF_FOLLOWS (int): Target number of users each user is following.
         help (str): Short description shown in ``manage.py help``.
         faker (Faker): Locale-specific Faker instance used for random data.
     """
 
     USER_COUNT = 200
     DEFAULT_PASSWORD = 'Password123'
+    NUMBER_OF_FOLLOWS = 10
     help = 'Seeds the database with sample data'
 
     def __init__(self, *args, **kwargs):
@@ -58,13 +61,15 @@ class Command(BaseCommand):
 
     def create_users(self):
         """
-        Create fixture users and then generate random users up to USER_COUNT.
+        Create fixture users and then generate random users up to USER_COUNT, as well as
+        creating follow relations for each user.
 
         The process is idempotent in spirit: attempts that fail (e.g., due to
         uniqueness constraints on username/email) are ignored and generation continues.
         """
         self.generate_user_fixtures()
         self.generate_random_users()
+        self.create_all_follows(self.NUMBER_OF_FOLLOWS)
 
     def generate_user_fixtures(self):
         """Attempt to create each predefined fixture user."""
@@ -125,6 +130,34 @@ class Command(BaseCommand):
             last_name=data['last_name'],
         )
 
+    def create_all_follows(self, follow_amount):
+        """
+        Create follow relationships for every user.
+
+        Args:
+            follow_amount (int): How many users each user will attempt to follow.
+        """
+        all_users = User.objects.all()
+        for user in all_users:
+            print(f"Creating followers for {user.username}", end='\r')
+            self.create_follow(user, follow_amount)
+
+    def create_follow(self, user, follow_amount):
+        """
+        Create follow relationships for one user.
+
+        Args:
+            user (User): the user that is doing the following.
+            follow_amount (int): How many users the user will attempt to follow.
+        """
+        all_users = User.objects.all().exclude(pk=user.pk)
+        users_to_follow = sample(
+            list(all_users),
+            follow_amount
+        )
+        for followee in users_to_follow:
+            Follow.objects.create(follower=user, followee=followee)
+
 def create_username(first_name, last_name):
     """
     Construct a simple username from first and last names.
@@ -150,3 +183,4 @@ def create_email(first_name, last_name):
         str: An email in the form ``{firstname}.{lastname}@example.org``.
     """
     return first_name + '.' + last_name + '@example.org'
+
