@@ -24,6 +24,7 @@ from recipes.views.follow_view import follow_user, follow
 from recipes.views.unfollow_view import unfollow_user, unfollow
 from recipes.views.recipe_create_view import recipe_create_view
 from recipes.views.recipe_browse_view import recipe_browse_view
+from recipes.views.profile_display_view import ProfileDisplayView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,7 +42,8 @@ urlpatterns = [
     path('unfollow/', unfollow, name='unfollow'),
     path('unfollow/<str:username>/', unfollow_user, name='unfollow_user'),
     path('recipes/browse/', recipe_browse_view, name='recipe_browse'),
-    path('recipe/create/', recipe_create_view, name='recipe_create')
+    path('recipe/create/', recipe_create_view, name='recipe_create'),
+    path('view_profile/', ProfileDisplayView.as_view(), name='view_profile')
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
