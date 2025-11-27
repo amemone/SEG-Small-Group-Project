@@ -1,11 +1,11 @@
 """Unit tests for the Follow model."""
-from socket import send_fds
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
 from recipes.models import User
 from recipes.models import Follow
+
 
 class FollowModelTestCase(TestCase):
     """Unit tests for the Follow model."""
@@ -26,6 +26,7 @@ class FollowModelTestCase(TestCase):
     def test_cannot_have_multiple_same_follow_relation(self):
         self.second_user = User.objects.get(username='@janedoe')
         with self.assertRaises(IntegrityError):
-            self.duplicate_follow = Follow.objects.create(follower=self.user, followee=self.second_user)
+            self.duplicate_follow = Follow.objects.create(
+                follower=self.user, followee=self.second_user)
             self.follow.full_clean()
             self.duplicate_follow.full_clean()

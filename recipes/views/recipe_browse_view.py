@@ -20,6 +20,7 @@ def recipe_browse_view(request):
     if not query and not tags and not user and not date:
         recipes = Recipe.objects.none()
     else:
+        recipes = recipes.order_by('-publication_date')
         if query:
             recipes = Recipe.objects.filter(
                 Q(title__icontains=query) |
@@ -28,19 +29,12 @@ def recipe_browse_view(request):
         if tags:
             recipes = Recipe.objects.filter(tags__name__in=tags).distinct()
         if user:
-           recipes = Recipe.objects.filter(user__id=user)
+            recipes = Recipe.objects.filter(user__id=user)
 
         if date:
             recipes = Recipe.objects.filter(publication_date__date=date)
 
     return render(request, 'recipes/recipe_browse.html', {
-<< << << < HEAD
-        'recipes': recipes,
-        'query': query
-    })
-
-
-== == == =
         'recipes': recipes.order_by('-publication_date'),
         'query': query,
         'users': users,
@@ -49,4 +43,3 @@ def recipe_browse_view(request):
         'selected_user': user,
         'selected_date': date
     })
->>>>>>> e19aaf80478270abea3a4446ea2e6b9103f8a709

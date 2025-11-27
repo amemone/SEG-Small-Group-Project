@@ -43,14 +43,9 @@ urlpatterns = [
     path('unfollow/', unfollow, name='unfollow'),
     path('unfollow/<str:username>/', unfollow_user, name='unfollow_user'),
     path('recipes/browse/', recipe_browse_view, name='recipe_browse'),
-<<<<<<< HEAD
     path('recipes/delete/', views.RecipeDeleteView.as_view(), name='recipe_delete'),
-
-
-=======
     path('recipe/create/', recipe_create_view, name='recipe_create'),
     path('view_profile/', ProfileDisplayView.as_view(), name='view_profile')
->>>>>>> e19aaf80478270abea3a4446ea2e6b9103f8a709
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

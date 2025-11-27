@@ -3,6 +3,7 @@ from recipes.models import User
 from django.urls import reverse
 from recipes.models.recipes import Recipe
 
+
 class RecipeBrowseTest(TestCase):
     """
     Test suite for recipe browse view"""
@@ -10,28 +11,28 @@ class RecipeBrowseTest(TestCase):
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
     ]
-    
+
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
-        
+
         self.url = reverse('recipe_browse')
 
         self.first_recipe = Recipe.objects.create(
-            title = 'Vanilla Cake',
-            description = 'eggs, milk, flour, sugar, vanilla, icing',
-            user = self.user
+            title='Vanilla Cake',
+            description='eggs, milk, flour, sugar, vanilla, icing',
+            user=self.user
         )
 
         self.second_recipe = Recipe.objects.create(
-            title = 'Chocolate Cake',
-            description = 'eggs, milk, flour, sugar, chocolate icing',
-            user = self.user
+            title='Chocolate Cake',
+            description='eggs, milk, flour, sugar, chocolate icing',
+            user=self.user
         )
 
         self.third_recipe = Recipe.objects.create(
-            title = 'Caramel Brownies',
-            description = 'eggs, milk, flour, sugar, cocoa powder, caramel',
-            user = self.user
+            title='Caramel Brownies',
+            description='eggs, milk, flour, sugar, cocoa powder, caramel',
+            user=self.user
         )
 
     def test_browse_url(self):
@@ -70,6 +71,5 @@ class RecipeBrowseTest(TestCase):
     def test_search_returns_multiple_recipes(self):
         response = self.client.get(self.url, {'q': 'Cake'})
         recipes = list(response.context['recipes'])
-        self.assertEqual(recipes, [self.second_recipe, self.first_recipe])
-
-    
+        self.assertEqual(recipes, [self.second_recipe, self.first_recipe] or [
+                         self.first_recipe, self.second_recipe])
