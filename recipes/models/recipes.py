@@ -2,6 +2,17 @@ from django.db import models
 from django.utils import timezone
 from .user import User
 
+class Tag(models.Model):
+    """
+    Model representing a tag for the recipes created by a user.
+    
+    Attributes:
+        name (str): The name of the tag
+    """
+    name = models.CharField(max_length=25, unique = True)
+
+    def __str__(self):
+       return self.name
 
 class Recipe(models.Model):
     """
@@ -20,6 +31,8 @@ class Recipe(models.Model):
     publication_date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes')
+    
+    tags = models.ManyToManyField(Tag, blank = True)
 
     class Meta:
         """Model options."""
