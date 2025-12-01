@@ -19,7 +19,7 @@ class ProfileDisplayView(LoginRequiredMixin, TemplateView):
     def get_follower_users(self, user):
         follower_users = Follow.objects.filter(followee=user).select_related("follower")
         return [follower_user.follower for follower_user in follower_users]
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
