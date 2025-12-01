@@ -57,6 +57,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to=settings.AUTH_USER_MODEL)),
                 ('tags', models.ManyToManyField(blank=True, to='recipes.tag')),
+                ('favourites', models.ManyToManyField(blank=True, related_name='favourite_recipes', to=settings.AUTH_USER_MODEL
+                )),
             ],
             options={
                 'verbose_name': 'Recipe',

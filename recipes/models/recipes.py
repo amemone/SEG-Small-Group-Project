@@ -34,6 +34,8 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name='recipes')
     id = models.AutoField(primary_key=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    favourites = models.ManyToManyField(
+        User, related_name="favourite_recipes", blank=True)
 
     class Meta:
         """Model options."""
@@ -44,3 +46,10 @@ class Recipe(models.Model):
     def __str__(self):
         """Return string representation of the recipe."""
         return self.title
+    
+
+    def is_favourited(self, user):
+        return self.favourites.filter(id=user.id).exists()
+
+    def get_favourite_count(self):
+        return self.favourites.count()

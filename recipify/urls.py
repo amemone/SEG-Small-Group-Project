@@ -25,6 +25,7 @@ from recipes.views.unfollow_view import unfollow_user, unfollow
 from recipes.views.recipe_create_view import recipe_create_view
 from recipes.views.recipe_browse_view import recipe_browse_view
 from recipes.views.profile_display_view import ProfileDisplayView
+from recipes.views.favourite_view import toggle_favourite, favourite_list
 
 
 urlpatterns = [
@@ -45,7 +46,9 @@ urlpatterns = [
     path('recipes/browse/', recipe_browse_view, name='recipe_browse'),
     path('recipes/delete/', views.RecipeDeleteView.as_view(), name='recipe_delete'),
     path('recipe/create/', recipe_create_view, name='recipe_create'),
-    path('view_profile/', ProfileDisplayView.as_view(), name='view_profile')
+    path('view_profile/', ProfileDisplayView.as_view(), name='view_profile'),
+    path("favourite-toggle/", toggle_favourite, name="toggle_favourite"),
+    path("favourites/", favourite_list, name="favourite_list"),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

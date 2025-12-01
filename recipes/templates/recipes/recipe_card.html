@@ -1,12 +1,14 @@
+{% load favourite_tags %}
+
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">{{ recipe.title }}</h5>
         <p class="card-text">{{ recipe.description }}</p>
 
         {% if recipe.tags.all %}
-            <div class = "mt-2">
+            <div class="mt-2">
                 {% for tag in recipe.tags.all %}
-                    <span class = "tag-pill tag-{{tag.name|slugify}}">{{tag.name}}</span>
+                    <span class="tag-pill tag-{{tag.name|slugify}}">{{tag.name}}</span>
                 {% endfor %}
             </div>
         {% endif %}
@@ -28,4 +30,69 @@
         </form>
         {% endif %}
     </div>
+
+    {% if request.user.is_authenticated %}
+        <form class="favorite-form position-absolute"
+              style="top:8px; right:8px; z-index:20;"
+              method="post"
+              data-recipe-id="{{ recipe.id }}">
+            {% csrf_token %}
+            <button type="button" class="btn btn-sm btn-outline-primary favourite-btn">
+                {% if recipe|is_favourited:request.user %}
+                    Unfavourite
+                {% else %}
+                    Favourite
+                {% endif %}
+            </button>
+        </form>
+    {% else %}
+        <a class="btn btn-sm btn-outline-secondary position-absolute"
+           style="top:8px; right:8px; z-index:20;"
+           href="{% url 'log_in' %}?next={{ request.get_full_path }}">
+            Log in to Favourite
+        </a>
+    {% endif %}
+
+    <p class="mt-2 ms-3 favourite-count">{{ recipe.get_favourite_count }} favourites</p>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".favorite-form").forEach(form => {
+
+        if (form.dataset.bound === "1") return;  // prevents double-binding
+        form.dataset.bound = "1";
+
+        const btn = form.querySelector(".favourite-btn");
+
+        btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            // temporarily disable button to prevent double-click spam
+            btn.disabled = true;
+
+            const recipeId = form.dataset.recipeId;
+
+            const response = await fetch("{% url 'toggle_favourite' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: new URLSearchParams({ recipe_id: recipeId }),
+            });
+
+            const data = await response.json();
+
+            btn.textContent = data.is_favourited ? "Unfavourite" : "Favourite";
+
+            const countElement = form.parentElement.querySelector(".favourite-count");
+            if (countElement) {
+                countElement.textContent = `${data.favourite_count} favourites`;
+            }
+
+            btn.disabled = false;
+        });
+    });
+});
+</script>
