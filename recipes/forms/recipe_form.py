@@ -2,6 +2,7 @@ from django import forms
 from recipes.models.recipes import Recipe  # Changed from recepies
 from recipes.models.recipes import Tag
 
+
 class RecipeForm(forms.ModelForm):
     """
     Form for creating and updating recipes.
@@ -27,6 +28,7 @@ class RecipeForm(forms.ModelForm):
                 'placeholder': 'Describe your recipe...',
                 'rows': 6
             }),
+
             'tags': forms.CheckboxSelectMultiple()
         }
         labels = {
