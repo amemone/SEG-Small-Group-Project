@@ -26,6 +26,11 @@ class Recipe(models.Model):
         user (User): The user who created this recipe.
         publication_date (datetime): Timestamp when the recipe was published.
     """
+    VISIBILITY_CHOICES = [
+        ('public', 'Public'),
+        ('friends', 'Friends'),
+        ('me', 'Only Me'),
+    ]
 
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=100000)
@@ -34,6 +39,11 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name='recipes')
     id = models.AutoField(primary_key=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    visibility = models.CharField(
+        max_length=10,
+        choices=VISIBILITY_CHOICES,
+        default='public'
+    )
 
     class Meta:
         """Model options."""
