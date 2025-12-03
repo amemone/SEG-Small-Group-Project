@@ -90,3 +90,42 @@ class ProfileDisplayViewTest(TestCase):
         self.assertEqual(new_count, initial_count - 1)
         self.assertFalse(Follow.objects.filter(follower = self.user, followee= self.second_user).exists())
 
+    def test_following_pagination_page_size(self):
+        for i in range(7):
+            following = User.objects.create_user(
+                username=f'@user{i}',
+                email=f'user{i}@example.com',
+                password='Password123',
+                first_name='User',
+                last_name=str(i),
+            )
+            Follow.objects.create(follower = self.user, followee = following)
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        page_object = response.context["user_followings"]
+        self.assertEqual(len(page_object.object_list), 5)
+        self.assertTrue(page_object.has_next)
+
+    def test_follower_pagination_page_size(self):
+        for i in range(7):
+            follower = User.objects.create(
+                username=f'@follower{i}',
+                email=f'follower{i}@example.com',
+                password='Password123',
+                first_name='Follower',
+                last_name=str(i),
+            )
+            Follow.objects.create(follower = follower, followee = self.user)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        page_object = response.context["user_followers"]
+        self.assertEqual(len(page_object.object_list), 5)
+        self.assertTrue(page_object.has_next)
+
+    def test_following_empty_page_shows_no_users_message(self):
+        response = self.client.get(self.url + "?following_page=99")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<b>No Users</b>", html=True)
