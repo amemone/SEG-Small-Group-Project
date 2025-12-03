@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from recipes.models.follow import Follow
+from django.core.paginator import Paginator
+
 
 
 class ProfileDisplayView(LoginRequiredMixin, TemplateView):
@@ -20,12 +22,27 @@ class ProfileDisplayView(LoginRequiredMixin, TemplateView):
         follower_users = Follow.objects.filter(followee=user).select_related("follower")
         return [follower_user.follower for follower_user in follower_users]
     
+    def paginate_following(self, user):
+        followings = self.get_following_users(user)
+        following_paginate = Paginator(followings, 5)
+        page_number = self.request.GET.get('following_page')
+        page_object = following_paginate.get_page(page_number)
+        return page_object
+    
+    def paginate_followers(self, user):
+        followers = self.get_follower_users(user)
+        follower_paginate = Paginator(followers, 5)
+        page_number = self.request.GET.get('follower_page')
+        page_object = follower_paginate.get_page(page_number)
+        return page_object
+
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         context["following"] = self.get_following_count(user)
-        context["user_followings"] = self.get_following_users(user)
+        context["user_followings"] = self.paginate_following(user)
         context["followers"] = self.get_follower_count(user)
-        context["user_followers"] = self.get_follower_users(user)
+        context["user_followers"] = self.paginate_followers(user)
         context["user_name"] = user.username
         return context
