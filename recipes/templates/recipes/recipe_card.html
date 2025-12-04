@@ -45,6 +45,9 @@
                 {% endif %}
             </button>
         </form>
+        <div class="text-muted small favourite-count mt-1">
+            {{ recipe.get_favourite_count }} favourites
+        </div>
     {% else %}
         <a class="btn btn-sm btn-outline-secondary position-absolute"
            style="top:8px; right:8px; z-index:20;"
@@ -52,27 +55,19 @@
             Log in to Favourite
         </a>
     {% endif %}
-
-    <p class="mt-2 ms-3 favourite-count">{{ recipe.get_favourite_count }} favourites</p>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".favorite-form").forEach(form => {
 
-        if (form.dataset.bound === "1") return;  // prevents double-binding
+        if (form.dataset.bound === "1") return;
         form.dataset.bound = "1";
-
         const btn = form.querySelector(".favourite-btn");
-
         btn.addEventListener("click", async (e) => {
             e.preventDefault();
-
-            // temporarily disable button to prevent double-click spam
             btn.disabled = true;
-
             const recipeId = form.dataset.recipeId;
-
             const response = await fetch("{% url 'toggle_favourite' %}", {
                 method: "POST",
                 headers: {
@@ -81,16 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 body: new URLSearchParams({ recipe_id: recipeId }),
             });
-
             const data = await response.json();
-
             btn.textContent = data.is_favourited ? "Unfavourite" : "Favourite";
-
             const countElement = form.parentElement.querySelector(".favourite-count");
             if (countElement) {
                 countElement.textContent = `${data.favourite_count} favourites`;
             }
-
             btn.disabled = false;
         });
     });

@@ -23,7 +23,11 @@ class ProfileDisplayView(LoginRequiredMixin, TemplateView):
         return [follower_user.follower for follower_user in follower_users]
     
     def get_favourites_user(self, user):
-        favourites_recipes = user.favourite_recipes.all().order_by("-id")
+        favourites_recipes = (
+            Recipe.objects
+            .filter(favourite__user=user)
+            .order_by("-favourite__favourited_at") 
+        )
         paginator = Paginator(favourites_recipes, 12) 
         current_page_number = self.request.GET.get("page")
         return paginator.get_page(current_page_number)

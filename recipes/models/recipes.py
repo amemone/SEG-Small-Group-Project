@@ -35,7 +35,12 @@ class Recipe(models.Model):
     id = models.AutoField(primary_key=True)
     tags = models.ManyToManyField(Tag, blank=True)
     favourites = models.ManyToManyField(
-        User, related_name="favourite_recipes", blank=True)
+        User,
+        related_name="favourite_recipes",
+        through="Favourite",
+        through_fields=("recipe", "user"),
+        blank=True
+    )
 
     class Meta:
         """Model options."""
