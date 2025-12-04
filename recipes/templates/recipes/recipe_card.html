@@ -1,7 +1,6 @@
 <a href="{% url 'view_recipe' recipe.id %}" class="text-decoration-none text-dark">
     <div class="card mb-3 card-hover position-relative">
 
-        <!-- Visibility label -->
         <span class="position-absolute top-0 end-0 m-2 text-muted" style="font-size: 0.9rem;">
             {{ recipe.get_visibility_display }}
         </span>

@@ -20,7 +20,6 @@ def recipe_browse_view(request):
     users = User.objects.all()
     all_tags = Tag.objects.all()
 
-    # Apply filters
     if query:
         recipes = recipes.filter(
             Q(title__icontains=query) |
