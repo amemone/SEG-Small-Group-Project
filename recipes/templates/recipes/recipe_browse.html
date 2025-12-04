@@ -1,59 +1,17 @@
 {% extends "base_content.html" %}
 {% block content %}
 
-<div class = "container">
-    <div class = "row mb-4">
-        <div class = "col-12 d-flex justify-content-between align-items-center">
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
             <h1>Browse Recipes</h1>
-            <a href = "{% url 'feed' %}" class = "btn btn-secondary">← Back to Feed</a>
+            <a href="{% url 'feed' %}" class="btn btn-secondary">← Back to Feed</a>
         </div>
 
-        <form method="get" action="{% url 'recipe_browse' %}" class="mb-3">
-            <div class="row g-2 align-items-center">
-                <div class="col-auto">
-                    <input
-                        type="text"
-                        name="q"
-                        placeholder="Search for a recipe..."
-                        value="{{ query }}"
-                        class="form-control"
-                    />
-                </div>
-
-                <div class="col-auto">
-                    <select name="user" class="form-select">
-                        <option value="">All Users</option>
-                        {% for u in users %}
-                            <option value="{{ u.id }}" {% if selected_user == u.id|stringformat:"s" %}selected{% endif %}>
-                                {{ u.username }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-auto">
-                    <input type="date" name="date" value="{{ selected_date }}" class="form-control">
-                </div>
-
-                <div class="col-12 d-flex flex-wrap mt-2">
-                    {% for tag in tags %}
-                        <input type="checkbox" 
-                               class="d-none" 
-                               id="tag-{{ tag.id }}" 
-                               name="tag" 
-                               value="{{ tag.name }}"
-                               {% if tag.name in selected_tags %}checked{% endif %}>
-                        <label for="tag-{{ tag.id }}" class="tag-pill tag-{{ tag.name|slugify }}">
-                            {{ tag.name }}
-                        </label>
-                    {% endfor %}
-                </div>
-
-                <div class="col-auto mt-2">
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{% url 'recipe_browse' %}" class="btn btn-secondary">Reset</a>
-                </div>
-            </div>
+        <form method="get" action="{%url 'recipe_browse' %}">
+            <input type="text" name="q" placeholder="Search for a recipe..." value="{{query}}"
+                style="padding: 5px; width: 250px" />
+            <button type="submit" style="padding: 5px">Search </button>
         </form>
     </div>
 
@@ -61,17 +19,17 @@
     <hr>
 
     {% if recipes %}
-        <div class = "row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            {% for recipe in recipes %}
-            <div class = "col">
-                {% include 'recipes/recipe_card.html' %}
-            </div>
-            {% endfor %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for recipe in recipes %}
+        <div class="col">
+            {% include 'recipes/recipe_card.html' %}
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <div class = "text-center py-5">
-            <p class = "lead text-muted">No recipes found.</p>
-        </div>
+    <div class="text-center py-5">
+        <p class="lead text-muted">No recipes found.</p>
+    </div>
     {% endif %}
 
 </div>

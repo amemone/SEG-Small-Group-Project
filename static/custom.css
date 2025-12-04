@@ -20,9 +20,9 @@
   height: 100vh;
 }
 
-.vcenter-item{
-    display: flex;
-    align-items: center;
+.vcenter-item {
+  display: flex;
+  align-items: center;
 }
 
 /*
@@ -45,6 +45,7 @@ p.cover-text {
   padding-bottom: 30px;
   border-radius: 15%;
 }
+
 .cover-card-block {
   opacity: 1
 }
@@ -82,13 +83,13 @@ ul.errorlist {
  */
 .profile-image {
   width: 120px;
-  clear:both;
-  float:left;
+  clear: both;
+  float: left;
 }
 
 .profile-text {
-  overflow:hidden;
-  padding-left:20px
+  overflow: hidden;
+  padding-left: 20px
 }
 
 h3.profile-title {
@@ -109,6 +110,7 @@ h3.profile-title {
   text-decoration: none;
   color: #0d6efd;
 }
+
 .content a:hover {
   text-decoration: underline;
   color: #0d6efd;
@@ -118,34 +120,84 @@ h3.profile-title {
 * Tags
 */
 .tag-checkbox {
-    display: none;
+  display: none;
 }
 
 .tag-pill {
-    display: inline-block;
-    padding: 0.25rem 0.6rem;
-    margin: 0.3rem;
-    border-radius: 50px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-    color: white;
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  margin: 0.3rem;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  color: white;
 }
 
-.tag-vegetarian { background-color: #78c189; border-color: #78c189; } 
-.tag-vegan { background-color: #0c8216; border-color: #0c8216; }      
-.tag-dairy-free { background-color: #ff8725; border-color: #ff8725; }
-.tag-gluten-free { background-color: #e5c463; border-color: #e5c463; } 
-.tag-high-protein { background-color: #4e07c1; border-color: #4e07c1; } 
-.tag-halal { background-color: #7da6e4; border-color: #7da6e4; }     
-.tag-nut-free { background-color: #cd8dab; border-color: #cd8dab; }  
+.tag-vegetarian {
+  background-color: #78c189;
+  border-color: #78c189;
+}
 
-.tag-checkbox:checked + .tag-pill {
-    filter: brightness(75%);
+.tag-vegan {
+  background-color: #0c8216;
+  border-color: #0c8216;
+}
+
+.tag-dairy-free {
+  background-color: #ff8725;
+  border-color: #ff8725;
+}
+
+.tag-gluten-free {
+  background-color: #e5c463;
+  border-color: #e5c463;
+}
+
+.tag-high-protein {
+  background-color: #4e07c1;
+  border-color: #4e07c1;
+}
+
+.tag-halal {
+  background-color: #7da6e4;
+  border-color: #7da6e4;
+}
+
+.tag-nut-free {
+  background-color: #cd8dab;
+  border-color: #cd8dab;
+}
+
+.tag-checkbox:checked+.tag-pill {
+  filter: brightness(75%);
 }
 
 .tag-pill:hover {
-    opacity: 0.8;
-    transform: scale(1.05);
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+/*
+* Recipe card hovers
+*/
+
+.card-hover {
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+/* Delete button */
+.btn-hover-grow {
+  transition: transform 0.15s ease-in-out;
+}
+
+.btn-hover-grow:hover {
+  transform: scale(1.1);
 }

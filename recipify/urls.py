@@ -48,5 +48,8 @@ urlpatterns = [
     path('recipe/create/', recipe_create_view, name='recipe_create'),
     path('view_profile/', ProfileDisplayView.as_view(), name='view_profile'),
     path("toggle_favourite/", toggle_favourite, name="toggle_favourite"),
+    path('view_profile/', views.ProfileDisplayView.as_view(), name='view_profile'),
+    path('recipe/<int:pk>/',
+         views.RecipeFullView.as_view(), name='view_recipe'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
