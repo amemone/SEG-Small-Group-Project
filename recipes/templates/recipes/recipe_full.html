@@ -27,8 +27,8 @@
                     <div class="mb-4" style="white-space: pre-wrap;">{{ recipe.description }}</div>
 
                     <p class="text-muted">
-                        Posted by <strong>{{ recipe.user.username }}</strong> on {{
-                        recipe.publication_date|date:"M d, Y" }}
+                        Posted by <strong>{{ recipe.user.username }}</strong> on 
+                        {{ recipe.publication_date|date:"M d, Y" }}
                     </p>
 
                     {% if recipe.user == user %}
