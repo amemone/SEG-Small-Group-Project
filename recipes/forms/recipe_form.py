@@ -2,6 +2,7 @@ from django import forms
 from recipes.models.recipes import Recipe  # Changed from recepies
 from recipes.models.recipes import Tag
 
+
 class RecipeForm(forms.ModelForm):
     """
     Form for creating and updating recipes.
@@ -16,7 +17,7 @@ class RecipeForm(forms.ModelForm):
         """Form options."""
 
         model = Recipe
-        fields = ['title', 'description', 'tags']
+        fields = ['title', 'description', 'visibility', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -26,6 +27,9 @@ class RecipeForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Describe your recipe...',
                 'rows': 6
+            }),
+            'visibility': forms.Select(attrs={
+                'class': 'form-control'
             }),
             'tags': forms.CheckboxSelectMultiple()
         }

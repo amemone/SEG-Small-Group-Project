@@ -1,38 +1,30 @@
 from django.test import TestCase
-from recipes.models.user import User
-from recipes.models.follow import Follow
+from recipes.models import User, Recipe, Favourite, Follow
 from django.urls import reverse
 
 class ProfileDisplayViewTest(TestCase):
 
+    fixtures = [
+        'recipes/tests/fixtures/default_user.json',
+        'recipes/tests/fixtures/other_users.json'
+    ]
+
     def setUp(self):
         """Test of the profile display view """
-        self.user = User.objects.create_user(
-            username='@johndoe',
-            email='john@example.com',
-            password='Password123',
-            first_name='John',
-            last_name='Doe',
-        )
-        self.second_user = User.objects.create_user(
-            username='@janedoe',
-            email='jane@example.com',
-            password='Password123',
-            first_name='Jane',
-            last_name='Doe',
-        )
-        self.third_user = User.objects.create_user(
-            username='@petrapickles',
-            email='petra@example.com',
-            password='Password123',
-            first_name='Petra',
-            last_name='Pickles',
-        )
+        self.user = User.objects.get(username='@johndoe')
+        self.second_user = User.objects.get(username='@janedoe')
+        self.third_user = User.objects.get(username='@petrapickles')
         self.url = reverse('view_profile')
         self.client.login(username='@johndoe', password="Password123")
 
     def test_view_profile_url(self):
         self.assertEqual(self.url, '/view_profile/')
+
+    def test_profile_requires_login(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue("/log_in" in response.url)
 
     def test_following_count_starts_at_zero(self):
         following_count = Follow.objects.filter(follower = self.user).count()
@@ -129,3 +121,60 @@ class ProfileDisplayViewTest(TestCase):
         response = self.client.get(self.url + "?following_page=99")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<b>No Users</b>", html=True)
+
+    def test_profile_display_loads_successfully(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'view_profile.html')
+        self.assertIn('favourites', response.context)
+
+    def test_profile_displays_favourites_in_order(self):
+        first_recipe = Recipe.objects.create(
+            title='Vanilla Cake',
+            description='eggs, milk, flour, sugar, vanilla, icing',
+            user=self.user
+        )
+        second_recipe = Recipe.objects.create(
+            title='Chocolate Cake',
+            description='eggs, milk, flour, sugar, chocolate icing',
+            user=self.user
+        )
+        third_recipe = Recipe.objects.create(
+            title='Caramel Brownies',
+            description='eggs, milk, flour, sugar, cocoa powder, caramel',
+            user=self.user
+        )
+        Favourite.objects.create(user=self.user, recipe=second_recipe)
+        Favourite.objects.create(user=self.user, recipe=third_recipe)
+        Favourite.objects.create(user=self.user, recipe=first_recipe)
+        response = self.client.get(self.url)
+        favourites_page = response.context['favourites']
+        favourites = list(favourites_page)
+        self.assertEqual(favourites, [first_recipe, third_recipe, second_recipe])
+
+    def test_profile_shows_no_favourites_when_user_has_none(self):
+        response = self.client.get(self.url)
+        favourites_page = response.context['favourites']
+        favourites = list(favourites_page)
+        self.assertEqual(favourites, [])
+
+    def test_profile_favourites_pagination(self):
+        recipes = []
+        for i in range(13):
+            recipe = Recipe.objects.create(
+                title=f"Recipe {i}",
+                description="test",
+                user=self.user
+            )
+            recipes.append(recipe)
+
+        for recipe in recipes:
+            Favourite.objects.create(user=self.user, recipe=recipe)
+        response = self.client.get(self.url + "?page=1")
+        first_page = response.context["favourites"]
+        self.assertEqual(len(first_page), 12)
+        self.assertTrue(first_page.has_next())
+        response = self.client.get(self.url + "?page=2")
+        second_page = response.context["favourites"]
+        self.assertEqual(len(second_page), 1)
+        self.assertFalse(second_page.has_next())

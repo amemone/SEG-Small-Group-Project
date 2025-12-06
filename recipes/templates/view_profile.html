@@ -92,5 +92,48 @@
 
         </div>
     </div>
+
+    {#Saved Recipes Section#}
+    {% if favourites %}
+    <section id="saved-recipes" class="mt-4">
+        <h3>Saved Recipes</h3>
+        <div class="row">
+            {% for fav in favourites %}
+                <div class="col-12 col-sm-6 col-md-4 mb-4">
+                    {% include "recipes/recipe_card.html" with recipe=fav show_fav_button=False %}
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if favourites.has_other_pages %}
+        <nav aria-label="Saved recipes pagination">
+            <ul class="pagination">
+                {% if favourites.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ favourites.previous_page_number }}">&laquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+
+                {% for num in favourites.paginator.page_range %}
+                    <li class="page-item {% if favourites.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if favourites.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ favourites.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </section>
+    {% else %}
+        <p class="text-muted mt-3">No saved recipes yet.</p>
+    {% endif %}
+
 </div>
 {% endblock %}

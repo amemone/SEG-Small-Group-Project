@@ -26,6 +26,11 @@ class Recipe(models.Model):
         user (User): The user who created this recipe.
         publication_date (datetime): Timestamp when the recipe was published.
     """
+    VISIBILITY_CHOICES = [
+        ('public', 'Public'),
+        ('friends', 'Friends'),
+        ('me', 'Only Me'),
+    ]
 
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=100000)
@@ -34,6 +39,18 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name='recipes')
     id = models.AutoField(primary_key=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    favourites = models.ManyToManyField(
+        User,
+        related_name="favourite_recipes",
+        through="Favourite",
+        through_fields=("recipe", "user"),
+        blank=True
+    )
+    visibility = models.CharField(
+        max_length=10,
+        choices=VISIBILITY_CHOICES,
+        default='public'
+    )
 
     class Meta:
         """Model options."""
@@ -44,3 +61,10 @@ class Recipe(models.Model):
     def __str__(self):
         """Return string representation of the recipe."""
         return self.title
+    
+
+    def is_favourited(self, user):
+        return self.favourites.filter(id=user.id).exists()
+
+    def get_favourite_count(self):
+        return self.favourites.count()

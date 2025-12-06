@@ -12,6 +12,7 @@ class RecipeDeleteView(View):
         recipe = Recipe.objects.get(id=recipe_id)
 
         if recipe.user == request.user:
+            recipe.favourites.clear()
             recipe.delete()
 
         return redirect("dashboard")

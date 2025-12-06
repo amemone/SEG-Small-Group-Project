@@ -1,7 +1,9 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from recipes.models.follow import Follow
 from django.core.paginator import Paginator
+from recipes.models.follow import Follow
+from recipes.models import Recipe
+
 
 
 
@@ -35,8 +37,17 @@ class ProfileDisplayView(LoginRequiredMixin, TemplateView):
         page_number = self.request.GET.get('follower_page')
         page_object = follower_paginate.get_page(page_number)
         return page_object
-
     
+    def get_favourites_user(self, user):
+        favourites_recipes = (
+            Recipe.objects
+            .filter(favourite__user=user)
+            .order_by("-favourite__favourited_at") 
+        )
+        paginator = Paginator(favourites_recipes, 12) 
+        current_page_number = self.request.GET.get("page")
+        return paginator.get_page(current_page_number)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -45,4 +56,6 @@ class ProfileDisplayView(LoginRequiredMixin, TemplateView):
         context["followers"] = self.get_follower_count(user)
         context["user_followers"] = self.paginate_followers(user)
         context["user_name"] = user.username
+        context["favourites"] = self.get_favourites_user(user)
+        context["favourites"] = self.get_favourites_user(user)
         return context
