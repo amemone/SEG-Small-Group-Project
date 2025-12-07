@@ -26,7 +26,9 @@ def recipe_browse_view(request):
         recipes = recipes.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query)
-        )
+        ).order_by('-publication_date')
+    else:
+        recipes = Recipe.objects.none()
 
     if tags:
         recipes = recipes.filter(tags__name__in=tags).distinct()

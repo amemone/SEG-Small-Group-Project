@@ -14,24 +14,30 @@ class RecipeBrowseTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
-
         self.url = reverse('recipe_browse')
 
+        # Create recipes with required fields
         self.first_recipe = Recipe.objects.create(
             title='Vanilla Cake',
             description='eggs, milk, flour, sugar, vanilla, icing',
+            difficulty='Beginner',
+            visibility='Public',
             user=self.user
         )
 
         self.second_recipe = Recipe.objects.create(
             title='Chocolate Cake',
             description='eggs, milk, flour, sugar, chocolate icing',
+            difficulty='Intermediate',
+            visibility='Public',
             user=self.user
         )
 
         self.third_recipe = Recipe.objects.create(
             title='Caramel Brownies',
             description='eggs, milk, flour, sugar, cocoa powder, caramel',
+            difficulty='Advanced',
+            visibility='Public',
             user=self.user
         )
 
@@ -71,5 +77,5 @@ class RecipeBrowseTest(TestCase):
     def test_search_returns_multiple_recipes(self):
         response = self.client.get(self.url, {'q': 'Cake'})
         recipes = list(response.context['recipes'])
-        self.assertEqual(recipes, [self.second_recipe, self.first_recipe] or [
-                         self.first_recipe, self.second_recipe])
+        self.assertEqual(recipes, [self.second_recipe, self.first_recipe])
+
