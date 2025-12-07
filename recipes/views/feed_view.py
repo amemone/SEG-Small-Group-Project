@@ -31,7 +31,14 @@ def feed_view(request):
         Q(visibility='me', user=viewer)
     ).order_by('-publication_date')
 
+    categories = ['Beginner', 'Intermediate', 'Advanced']
+    selected_difficulty = request.GET.get('difficulty')
+    if selected_difficulty in categories:
+        recipes = recipes.filter(difficulty=selected_difficulty)
+
     context = {
         'recipes': recipes,
+        'categories': categories,
+        'selected_difficulty': selected_difficulty,
     }
     return render(request, 'recipes/feed.html', context)
