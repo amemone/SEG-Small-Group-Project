@@ -25,19 +25,19 @@ def unfollow_user(request, username):
         unfollowed_user = User.objects.get(username=username)
     except User.DoesNotExist:
         messages.error(request, "User not found.")
-        return redirect("unfollow")
+        return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
     if unfollowed_user == request.user:
         messages.error(request, "Cannot unfollow yourself.")
-        return redirect("unfollow")
+        return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
     if check_if_following(request.user, unfollowed_user):
         Follow.objects.filter(follower=request.user, followee=unfollowed_user).delete()
         messages.success(request, f"You have unfollowed {username}.")
-        return redirect("unfollow")
+        return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
     messages.error(request, f"You are not following {username}.")
-    return redirect("unfollow")
+    return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
 def check_if_following(follower, followee):
     """
