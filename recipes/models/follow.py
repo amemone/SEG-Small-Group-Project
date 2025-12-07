@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from .user import User
 
+
 class Follow(models.Model):
     """Model used to show a following relation between two users"""
     follower = models.ForeignKey(

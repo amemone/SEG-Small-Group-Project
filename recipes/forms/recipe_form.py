@@ -13,6 +13,11 @@ class RecipeForm(forms.ModelForm):
         required=False
     )
 
+    ingredients = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
+
     class Meta:
         """Form options."""
 
@@ -57,3 +62,8 @@ class RecipeForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Description must be at least 10 characters long.')
         return description.strip()
+
+    ingredients = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput()
+    )

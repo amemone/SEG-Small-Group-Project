@@ -13,20 +13,16 @@
                     <label class="form-label">Tags</label>
                     <div class="d-flex flex-wrap">
                         {% for tag in form.fields.tags.queryset %}
-                            <input type="checkbox"
-                                    name="tags"
-                                    value="{{ tag.id }}"
-                                    id="tag-{{ tag.id }}"
-                                    class="tag-checkbox"
-                                    {% if tag in form.initial.tags %} checked {% endif %}>
-                            <label for="tag-{{ tag.id }}" class="tag-pill tag-{{ tag.name|slugify }}">
-                                {{ tag.name }}
-                            </label>
+                        <input type="checkbox" name="tags" value="{{ tag.id }}" id="tag-{{ tag.id }}"
+                            class="tag-checkbox" {% if tag in form.initial.tags %} checked {% endif %}>
+                        <label for="tag-{{ tag.id }}" class="tag-pill tag-{{ tag.name|slugify }}">
+                            {{ tag.name }}
+                        </label>
                         {% endfor %}
                     </div>
                     {{ form.tags.errors }}
                 </div>
-                
+
                 <input type="submit" value="Create Recipe" class="btn btn-primary">
                 <a href="{% url 'feed' %}" class="btn btn-secondary">Cancel</a>
             </form>
