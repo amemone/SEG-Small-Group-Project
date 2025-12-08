@@ -1,29 +1,39 @@
 {% extends 'base_content.html' %}
 {% block content %}
+{% load static %}
+
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1>Recipe Feed</h1>
-                <a href="{% url 'recipe_create' %}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> New Recipe
-                </a>
-            </div>
 
-            <form method="get" action="{%url 'recipe_browse' %}">
-                <input type="text" name="q" placeholder="Search for a recipe..." value="{{query}}"
-                    style="padding: 5px; width: 250px" />
-                <button type="submit" style="padding: 5px">Search </button>
-
-                <button type="submit" name="popular" value="1" style="padding: 5px">Filter By Popularity</button>
-            </form>
+    <!-- Header + Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Recipe Feed</h1>
+        <div>
+            <a href="{% url 'recipe_create' %}" class="btn btn-primary me-2">
+                <i class="bi bi-plus-circle"></i> New Recipe
+            </a>
+            <a href="{% url 'recipe_browse' %}" class="btn btn-secondary">
+                Browse Recipes
+            </a>
         </div>
     </div>
 
-    <hr>
+    <!-- Category Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        {% for cat in categories %}
+        <li class="nav-item">
+            <a class="nav-link {% if selected_difficulty == cat %}active{% endif %}" 
+               href="?difficulty={{ cat }}">{{ cat }}</a>
+        </li>
+        {% endfor %}
+        <li class="nav-item">
+            <a class="nav-link {% if not selected_difficulty %}active{% endif %}" 
+               href="{% url 'feed' %}">All</a>
+        </li>
+    </ul>
 
+    <!-- Messages -->
     {% if messages %}
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -35,27 +45,25 @@
     </div>
     {% endif %}
 
-    <div class="row">
-        <div class="col-12">
-            {% if recipes %}
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                {% for recipe in recipes %}
-                <div class="col">
-                    {% include 'recipes/recipe_card.html' %}
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="text-center py-5">
-                <i class="bi bi-journal-text display-1 text-muted"></i>
-                <p class="lead text-muted mt-3">No recipes yet!</p>
-                <p class="text-muted">Be the first to share a delicious recipe.</p>
-                <a href="{% url 'recipe_create' %}" class="btn btn-primary btn-lg mt-3">
-                    Create the First Recipe
-                </a>
-            </div>
-            {% endif %}
+    <!-- Recipes Grid -->
+    {% if recipes %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for recipe in recipes %}
+        <div class="col">
+            {% include 'recipes/recipe_card.html' %}
         </div>
+        {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-journal-text"></i>
+        <p class="lead mt-3">No recipes yet!</p>
+        <p>Be the first to share a delicious recipe.</p>
+        <a href="{% url 'recipe_create' %}" class="btn btn-primary btn-lg">
+            Create Recipe
+        </a>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

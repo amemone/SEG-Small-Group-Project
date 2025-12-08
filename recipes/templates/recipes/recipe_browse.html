@@ -1,25 +1,55 @@
-{% extends "base_content.html" %}
+{% extends 'base_content.html' %}
 {% block content %}
+{% load static %}
 
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1>Browse Recipes</h1>
-            <a href="{% url 'feed' %}" class="btn btn-secondary">← Back to Feed</a>
-        </div>
 
-        <form method="get" action="{%url 'recipe_browse' %}">
-            <input type="text" name="q" placeholder="Search for a recipe..." value="{{query}}"
-                style="padding: 5px; width: 250px" />
-            <button type="submit" style="padding: 5px">Search </button>
-
-            <button type="submit" name="popular" value="1" style="padding: 5px">Filter By Popularity</button>
-        </form>
+    <!-- Header + Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Browse Recipes</h1>
+        <a href="{% url 'feed' %}" class="btn btn-secondary">← Back to Feed</a>
     </div>
 
+    <!-- Search + Filters Form -->
+    <form method="get" action="{% url 'recipe_browse' %}" class="filter-bar mb-3">
+        <input type="text" name="q" placeholder="Search recipes..." value="{{ query }}">
+        <input type="date" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+        <select name="user">
+            <option value="">All Users</option>
+            {% for u in users %}
+                <option value="{{ u.id }}" {% if selected_user == u.id %}selected{% endif %}>{{ u.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
 
-    <hr>
+        <!-- Tag Filters inside the form -->
+        <div class="tags-filter">
+            {% for tag in tags %}
+            <input type="checkbox" name="tag" value="{{ tag.name }}" id="tag-{{ forloop.counter }}" class="tag-checkbox"
+                {% if tag.name in selected_tags %}checked{% endif %}>
+            <label for="tag-{{ forloop.counter }}" class="tag-pill tag-{{ tag.name|slugify }}">{{ tag.name }}</label>
+            {% endfor %}
+        </div>
 
+        <!-- Preserve category in the search -->
+        {% if selected_category %}
+        <input type="hidden" name="category" value="{{ selected_category }}">
+        {% endif %}
+    </form>
+
+    <!-- Category Tabs -->
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link {% if not selected_category %}active{% endif %}" href="{% url 'recipe_browse' %}">All</a>
+        </li>
+        {% for cat in categories %}
+        <li class="nav-item">
+            <a class="nav-link {% if selected_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Recipes Grid -->
     {% if recipes %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for recipe in recipes %}
@@ -29,8 +59,9 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-5">
-        <p class="lead text-muted">No recipes found.</p>
+    <div class="empty-state">
+        <i class="bi bi-journal-text"></i>
+        <p class="lead mt-3">No recipes found.</p>
     </div>
     {% endif %}
 

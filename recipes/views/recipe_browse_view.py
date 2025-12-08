@@ -12,6 +12,7 @@ def recipe_browse_view(request):
     user_id = request.GET.get('user')  # get user from GET
     date = request.GET.get('date')
     tags = request.GET.getlist('tag')
+    category = request.GET.get('category')
     popular = request.GET.get('popular')
 
     if user_id:
@@ -20,12 +21,16 @@ def recipe_browse_view(request):
     recipes = Recipe.objects.all()
     users = User.objects.all()
     all_tags = Tag.objects.all()
+    categories = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
+
+    if not query and not tags and not user_id and not date and not category:
+        recipes = Recipe.objects.all()
 
     if query:
         recipes = recipes.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query)
-        )
+        ).order_by('-publication_date')
 
     if tags:
         recipes = recipes.filter(tags__name__in=tags).distinct()
@@ -36,11 +41,6 @@ def recipe_browse_view(request):
     if date:
         recipes = recipes.filter(publication_date__date=date)
 
-    if popular:
-        recipes = filter_by_popularity(recipes)
-    else:
-        recipes = recipes.order_by('-publication_date')
-
     # Order by newest first
     #recipes = recipes.order_by('-publication_date')
 
@@ -49,10 +49,10 @@ def recipe_browse_view(request):
         'query': query,
         'users': users,
         'tags': all_tags,
+        'categories': categories,
         'selected_tags': tags,
         'selected_user': user_id,
-        'selected_date': date,
-        'popular': popular
+        'selected_date': date
     })
 
 def filter_by_popularity(queryset):
