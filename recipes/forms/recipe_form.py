@@ -25,6 +25,7 @@ class RecipeForm(forms.ModelForm):
         """Form options."""
         model = Recipe
         fields = ['title', 'ingredients', 'description', 'visibility', 'tags']
+        fields = ['title', 'description', 'visibility', 'tags', 'difficulty']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -35,7 +36,12 @@ class RecipeForm(forms.ModelForm):
                 'placeholder': 'Describe your recipe...',
                 'rows': 6
             }),
-            'visibility': forms.Select(attrs={'class': 'form-control'}),
+            'visibility': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'difficulty': forms.Select(attrs={
+                'class': 'form-select'
+            }),
             'tags': forms.CheckboxSelectMultiple()
         }
         labels = {

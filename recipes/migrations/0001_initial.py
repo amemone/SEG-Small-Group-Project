@@ -98,4 +98,9 @@ class Migration(migrations.Migration):
             name='favourite',
             unique_together={('user', 'recipe')},
         ),
+        migrations.AddField(
+            model_name='recipe',
+            name='difficulty',
+            field=models.CharField(choices=[('Beginner', 'Beginner'), ('Intermediate', 'Intermediate'), ('Advanced', 'Advanced')], default='Beginner', max_length=15),
+        ),
     ]

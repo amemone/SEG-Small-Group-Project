@@ -2,6 +2,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from recipes.models import User
+from recipes.models import Follow
 
 
 class UserModelTestCase(TestCase):
@@ -16,6 +17,7 @@ class UserModelTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
+        self.second_user = User.objects.get(username='@janedoe')
 
     def test_valid_user(self):
         self._assert_user_is_valid()
@@ -138,6 +140,20 @@ class UserModelTestCase(TestCase):
         actual_gravatar_url = self.user.mini_gravatar()
         expected_gravatar_url = self._gravatar_url(size=60)
         self.assertEqual(actual_gravatar_url, expected_gravatar_url)
+
+    def test_get_followers_with_no_followers(self):
+        self.assertEqual(self.user.get_followers(), 0)
+
+    def test_get_followers_with_followers(self):
+        Follow.objects.create(follower=self.second_user, followee=self.user)
+        self.assertEqual(self.user.get_followers(), 1)
+
+    def test_get_following_with_no_following(self):
+        self.assertEqual(self.user.get_following(), 0)
+
+    def test_get_following_with_following(self):
+        Follow.objects.create(follower=self.user, followee=self.second_user)
+        self.assertEqual(self.user.get_following(), 1)
 
     def _gravatar_url(self, size):
         gravatar_url = f"{UserModelTestCase.GRAVATAR_URL}?size={size}&default=mp"

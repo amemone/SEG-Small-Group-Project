@@ -34,6 +34,12 @@ class Recipe(models.Model):
         user (User): The user who created this recipe.
         publication_date (datetime): Timestamp when the recipe was published.
     """
+    DIFFICULTY_CHOICES = [
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+    ]
+
     VISIBILITY_CHOICES = [
         ('public', 'Public'),
         ('friends', 'Friends'),
@@ -62,6 +68,11 @@ class Recipe(models.Model):
         max_length=10,
         choices=VISIBILITY_CHOICES,
         default='public'
+    )
+    difficulty = models.CharField(
+        max_length=15,
+        choices=DIFFICULTY_CHOICES,
+        default='Beginner'
     )
 
     class Meta:

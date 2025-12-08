@@ -12,6 +12,7 @@ def recipe_browse_view(request):
     user_id = request.GET.get('user')  # get user from GET
     date = request.GET.get('date')
     tags = request.GET.getlist('tag')
+    category = request.GET.get('category')
 
     if user_id:
         user_id = int(user_id)  # convert to integer for comparison in template
@@ -19,12 +20,16 @@ def recipe_browse_view(request):
     recipes = Recipe.objects.all()
     users = User.objects.all()
     all_tags = Tag.objects.all()
+    categories = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
+
+    if not query and not tags and not user_id and not date and not category:
+        recipes = Recipe.objects.all()
 
     if query:
         recipes = recipes.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query)
-        )
+        ).order_by('-publication_date')
 
     if tags:
         recipes = recipes.filter(tags__name__in=tags).distinct()
@@ -35,6 +40,9 @@ def recipe_browse_view(request):
     if date:
         recipes = recipes.filter(publication_date__date=date)
 
+    if category:
+        recipes = recipes.filter(difficulty=category)
+
     # Order by newest first
     recipes = recipes.order_by('-publication_date')
 
@@ -43,7 +51,9 @@ def recipe_browse_view(request):
         'query': query,
         'users': users,
         'tags': all_tags,
+        'categories': categories,
         'selected_tags': tags,
         'selected_user': user_id,
-        'selected_date': date
+        'selected_date': date,
+        'selected_category': category,
     })

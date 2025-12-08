@@ -16,10 +16,36 @@
             <p>{{ following }}</p>
 
             <h4>Users You Follow:</h4>
-            {% if user_followings %}
+            {% if user_followings and user_followings.object_list %}
                 {% for u in user_followings %}
                     <p>{{ u.username }}</p>
                 {% endfor %}
+            <nav aria-label="following_pagination">
+                <ul class="pagination">
+                    {% if user_followings.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?following_page={{user_followings.previous_page_number }}">
+                                Previous
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                        Page {{ user_followings.number }} of {{ user_followings.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if user_followings.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?following_page={{ user_followings.next_page_number }}">
+                                Next
+                            </a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
             {% else %}
                 <p><b>No Users</b></p>
             {% endif %}
@@ -30,13 +56,40 @@
             <p>{{ followers }}</p>
 
             <h4>Users Following You:</h4>
-            {% if user_followers %}
+            {% if user_followers and user_followers.object_list %}
                 {% for u in user_followers %}
                     <p>{{ u.username }}</p>
                 {% endfor %}
+
+                <nav aria-label="Followers pagination">
+                    <ul class="pagination">
+                        {% if user_followers.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?follower_page={{ user_followers.previous_page_number }}">
+                                Previous
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                Page {{ user_followers.number }} of {{ user_followers.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if user_followers.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?follower_page={{ user_followers.next_page_number }}">
+                                    Next
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
             {% else %}
-                <p><b>No Users</b></p>
+            <p><b>No Users</b></p>
             {% endif %}
+
         </div>
     </div>
 

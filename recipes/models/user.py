@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from .follow import Follow
 
 class User(AbstractUser, models.Model):
     """Model used for user authentication, and team member related information."""
@@ -40,3 +41,13 @@ class User(AbstractUser, models.Model):
         """Return a URL to a miniature version of the user's gravatar."""
         
         return self.gravatar(size=60)
+
+    def get_followers(self):
+        """Returns the number of users following this user."""
+
+        return Follow.objects.filter(followee=self).count()
+
+    def get_following(self):
+        """Returns the number of users this user is following."""
+
+        return Follow.objects.filter(follower=self).count()

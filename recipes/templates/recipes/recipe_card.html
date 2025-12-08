@@ -50,6 +50,14 @@
                 {% endif %}
             </button>
         </form>
+        <form class="favorite-form" method="post" data-recipe-id="{{ recipe.id }}" onclick="event.stopPropagation();">
+            {% csrf_token %}
+            <button type="button" class="btn btn-sm favourite-btn p-1 border-0 bg-transparent">
+                <i class="bi bi-heart{% if recipe|is_favourited:request.user %}-fill text-danger{% endif %}"
+                    style="font-size:1.9rem;"></i>
+            </button>
+        </form>
+
         {% else %}
         <a class="btn btn-sm btn-outline-secondary" href="{% url 'log_in' %}?next={{ request.get_full_path }}"
             onclick="event.stopPropagation();">
@@ -77,11 +85,15 @@
         document.querySelectorAll(".favorite-form").forEach(form => {
             if (form.dataset.bound === "1") return;
             form.dataset.bound = "1";
+
             const btn = form.querySelector(".favourite-btn");
+            const icon = btn.querySelector("i");
+
             btn.addEventListener("click", async (e) => {
                 e.preventDefault();
                 e.stopPropagation(); // Prevent opening card
                 btn.disabled = true;
+
                 const recipeId = form.dataset.recipeId;
                 const response = await fetch("{% url 'toggle_favourite' %}", {
                     method: "POST",
@@ -91,8 +103,17 @@
                     },
                     body: new URLSearchParams({ recipe_id: recipeId }),
                 });
+
                 const data = await response.json();
-                btn.textContent = data.is_favourited ? "Unfavourite" : "Favourite";
+
+                if (data.is_favourited) {
+                    icon.classList.add("bi-heart-fill", "text-danger");
+                    icon.classList.remove("bi-heart");
+                } else {
+                    icon.classList.remove("bi-heart-fill", "text-danger");
+                    icon.classList.add("bi-heart");
+                }
+
                 const countElement = form.closest(".position-absolute").querySelector(".favourite-count");
                 if (countElement) {
                     countElement.textContent = `${data.favourite_count} favourites`;
@@ -101,4 +122,5 @@
             });
         });
     });
+
 </script>

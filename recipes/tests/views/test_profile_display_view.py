@@ -1,9 +1,8 @@
 from django.test import TestCase
-from django.urls import reverse
 from recipes.models import User, Recipe, Favourite, Follow
+from django.urls import reverse
 
 class ProfileDisplayViewTest(TestCase):
-    """Tests of the profile display view."""
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
@@ -11,11 +10,14 @@ class ProfileDisplayViewTest(TestCase):
     ]
 
     def setUp(self):
+        """Test of the profile display view """
         self.user = User.objects.get(username='@johndoe')
-        self.client.login(username=self.user.username, password='Password123')
+        self.second_user = User.objects.get(username='@janedoe')
+        self.third_user = User.objects.get(username='@petrapickles')
         self.url = reverse('view_profile')
+        self.client.login(username='@johndoe', password="Password123")
 
-    def test_profile_display_url(self):
+    def test_view_profile_url(self):
         self.assertEqual(self.url, '/view_profile/')
 
     def test_profile_requires_login(self):
@@ -24,18 +26,101 @@ class ProfileDisplayViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue("/log_in" in response.url)
 
-    def test_profile_display_shows_follow_counts(self):
-        other = User.objects.get(username='@janedoe')
-        Follow.objects.create(follower=self.user, followee=other)
-        third = User.objects.create(username='@third', email='third@test.com')
-        third.set_password('Password123')
-        third.save()
-        Follow.objects.create(follower=third, followee=self.user)
+    def test_following_count_starts_at_zero(self):
+        following_count = Follow.objects.filter(follower = self.user).count()
+        self.assertEqual(following_count, 0)
+
+    def test_follower_count_starts_at_zero(self):
+        follower_count = Follow.objects.filter(followee = self.user).count()
+        self.assertEqual(follower_count, 0)
+
+    def test_profile_view_shows_no_followers_or_following_initially(self):
+        response = self.client.get(reverse('view_profile'))
+        self.assertEqual(response.status_code,200)
+
+        self.assertEqual(response.context["following"], 0)
+        self.assertEqual(response.context["followers"], 0)
+
+        self.assertEqual(list(response.context["user_followings"]), [])
+        self.assertEqual(list(response.context["user_followers"]), [])
+        
+        self.assertContains(response, "<b>No Users</b>", html=True)
+
+    def test_following_count_increases_when_following_someone(self):
+        initial_count = Follow.objects.filter(follower = self.user).count()
+        Follow.objects.create(follower = self.user, followee = self.second_user)
+        new_count = Follow.objects.filter(follower = self.user).count()
+        self.assertEqual(new_count, initial_count + 1)
+
+    def test_follower_count_increases_when_getting_followed(self):
+        initial_count = Follow.objects.filter(followee = self.second_user).count()
+        Follow.objects.create(follower = self.user, followee = self.second_user)
+        new_count = Follow.objects.filter(followee = self.second_user).count()
+        self.assertEqual(new_count, initial_count + 1)
+
+    def test_following_users_contains_and_excludes_expected_users(self):
+        Follow.objects.get_or_create(follower = self.user, followee = self.second_user)
+        Follow.objects.get_or_create(follower = self.user, followee = self.third_user)
+        following_users = [
+            user.followee.username
+            for user in
+            Follow.objects.filter(follower = self.user).select_related('followee')
+        ]
+        self.assertIn(self.second_user.username, following_users)
+        self.assertIn(self.third_user.username, following_users)
+
+    def test_unfollow_decreases_following_count_and_removes_user(self):
+        follow_relationship = Follow.objects.filter(follower=self.user, followee=self.second_user).first()
+        if follow_relationship is None:
+            follow_relationship = Follow.objects.create(follower = self.user, followee = self.second_user)
+        
+        initial_count = Follow.objects.filter(follower = self.user).count()
+
+        #unfollow
+        follow_relationship.delete()
+        new_count = Follow.objects.filter(follower = self.user).count()
+        self.assertEqual(new_count, initial_count - 1)
+        self.assertFalse(Follow.objects.filter(follower = self.user, followee= self.second_user).exists())
+
+    def test_following_pagination_page_size(self):
+        for i in range(7):
+            following = User.objects.create_user(
+                username=f'@user{i}',
+                email=f'user{i}@example.com',
+                password='Password123',
+                first_name='User',
+                last_name=str(i),
+            )
+            Follow.objects.create(follower = self.user, followee = following)
         response = self.client.get(self.url)
-        self.assertEqual(response.context["following"], 1)
-        self.assertEqual(response.context["followers"], 1)
-        self.assertIn(other, response.context["user_followings"])
-        self.assertIn(third, response.context["user_followers"])
+
+        self.assertEqual(response.status_code, 200)
+        page_object = response.context["user_followings"]
+        self.assertEqual(len(page_object.object_list), 5)
+        self.assertTrue(page_object.has_next)
+
+    def test_follower_pagination_page_size(self):
+        for i in range(7):
+            follower = User.objects.create(
+                username=f'@follower{i}',
+                email=f'follower{i}@example.com',
+                password='Password123',
+                first_name='Follower',
+                last_name=str(i),
+            )
+            Follow.objects.create(follower = follower, followee = self.user)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        page_object = response.context["user_followers"]
+        self.assertEqual(len(page_object.object_list), 5)
+        self.assertTrue(page_object.has_next)
+
+    def test_following_empty_page_shows_no_users_message(self):
+        response = self.client.get(self.url + "?following_page=99")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<b>No Users</b>", html=True)
 
     def test_profile_display_loads_successfully(self):
         response = self.client.get(self.url)
