@@ -23,7 +23,7 @@ class RecipeBrowseTest(TestCase):
             difficulty='Beginner',
             visibility='Public',
             user=self.user
-        )
+        ) 
 
         self.second_recipe = Recipe.objects.create(
             title='Chocolate Cake',
