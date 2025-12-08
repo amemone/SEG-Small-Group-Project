@@ -19,7 +19,8 @@ class CreateRecipeFormTestCase(TestCase):
 
         self.form_input = {
             'title': 'Scrambled eggs',
-            'description': 'Scrambled eggs recipe description'
+            'description': 'Scrambled eggs recipe description',
+            'visibility': 'public'
         }
 
     def test_form_contains_required_fields(self):
