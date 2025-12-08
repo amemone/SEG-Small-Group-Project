@@ -22,13 +22,14 @@ def recipe_browse_view(request):
     all_tags = Tag.objects.all()
     categories = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
 
+    if not query and not tags and not user_id and not date and not category:
+        recipes = Recipe.objects.all()
+
     if query:
         recipes = recipes.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query)
         ).order_by('-publication_date')
-    else:
-        recipes = Recipe.objects.none()
 
     if tags:
         recipes = recipes.filter(tags__name__in=tags).distinct()
