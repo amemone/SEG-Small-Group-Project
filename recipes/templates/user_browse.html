@@ -1,0 +1,49 @@
+{% extends "base_content.html" %}
+{% block content %}
+
+<div class = "container">
+    <div class = "row mb-4">
+        <div class = "col-12 d-flex justify-content-between align-items-center">
+            <h1>Search Users</h1>
+        </div>
+
+        <form method="get" action="{% url 'user_browse' %}" class="mb-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Search for a user..."
+                        value="{{ query }}"
+                        class="form-control"
+                    />
+                </div>
+
+
+                <div class="col-auto mt-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="{% url 'user_browse' %}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <hr>
+
+    {% if users %}
+        <div class = "row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for user in users %}
+            <div class = "col">
+                {% include 'partials/user_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class = "text-center py-5">
+            <p class = "lead text-muted">No users found.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

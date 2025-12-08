@@ -1,0 +1,10 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ user.username }}</h5>
+        <p class="card-text">Followers: {{ user.get_followers }}<br>Following: {{ user.get_following }}</p>
+
+        <a href="{% url 'follow_user' user.username %}" class="btn btn-primary">Follow</a>
+        <a href="{% url 'unfollow_user' user.username %}" class="btn btn-secondary">Unfollow</a>
+
+    </div>
+</div>

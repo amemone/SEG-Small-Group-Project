@@ -24,7 +24,7 @@ class FollowViewTestCase(TestCase):
 
     def _follow_and_check_response(self, username, message):
         response = self.client.get(reverse('follow_user', args=[username]))
-        self.assertRedirects(response, reverse('follow'))
+        self.assertRedirects(response, reverse('dashboard'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), message)
