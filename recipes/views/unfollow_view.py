@@ -3,15 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from recipes.models.user import User
 from recipes.models.follow import Follow
-from django.shortcuts import render
-from recipes.models.recipes import Recipe
 
-@login_required
-def unfollow(request):
-    if request.method == 'GET' and 'username' in request.GET:
-        username = request.GET.get('username')
-        return redirect('unfollow_user', username=username)
-    return render(request, 'unfollow.html')
 
 @login_required
 def unfollow_user(request, username):

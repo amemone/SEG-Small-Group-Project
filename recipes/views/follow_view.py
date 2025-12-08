@@ -3,15 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from recipes.models.user import User
 from recipes.models.follow import Follow
-from django.shortcuts import render
-from recipes.models.recipes import Recipe
-
-@login_required
-def follow(request):
-    if request.method == 'GET' and 'username' in request.GET:
-        username = request.GET.get('username')
-        return redirect('follow_user', username=username)
-    return render(request, 'follow.html')
 
 @login_required
 def follow_user(request, username):
