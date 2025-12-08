@@ -1,6 +1,5 @@
 from django import forms
-from recipes.models.recipes import Recipe  # Changed from recepies
-from recipes.models.recipes import Tag
+from recipes.models.recipes import Recipe, Tag
 
 
 class RecipeForm(forms.ModelForm):
@@ -14,15 +13,18 @@ class RecipeForm(forms.ModelForm):
     )
 
     ingredients = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter ingredients, one per line. Format: name quantity measurement\nExample:\nFlour 2 cups\nSugar 1 cup',
+            'rows': 6
+        }),
         required=False,
-        widget=forms.HiddenInput()
     )
 
     class Meta:
         """Form options."""
-
         model = Recipe
-        fields = ['title', 'description', 'visibility', 'tags']
+        fields = ['title', 'ingredients', 'description', 'visibility', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -33,9 +35,7 @@ class RecipeForm(forms.ModelForm):
                 'placeholder': 'Describe your recipe...',
                 'rows': 6
             }),
-            'visibility': forms.Select(attrs={
-                'class': 'form-control'
-            }),
+            'visibility': forms.Select(attrs={'class': 'form-control'}),
             'tags': forms.CheckboxSelectMultiple()
         }
         labels = {
@@ -62,8 +62,3 @@ class RecipeForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Description must be at least 10 characters long.')
         return description.strip()
-
-    ingredients = forms.CharField(
-        required=False,
-        widget=forms.HiddenInput()
-    )

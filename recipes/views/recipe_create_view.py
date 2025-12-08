@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from recipes.forms.recipe_form import RecipeForm  # Changed from recepy_form
+
+from recipes.forms.recipe_form import RecipeForm
 
 
 @login_required
@@ -14,8 +15,9 @@ def recipe_create_view(request):
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.user = request.user
+
             recipe.save()
-            form.save_m2m() 
+            form.save_m2m()
             messages.success(request, 'Recipe created successfully!')
             return redirect('feed')
         else:

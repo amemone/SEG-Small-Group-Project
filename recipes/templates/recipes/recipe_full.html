@@ -11,7 +11,7 @@
             </a>
 
             <div class="card shadow-sm">
-                <div class="card-body p-4">
+                <div class="card-sbody p-4">
 
                     <!-- Header: Title + tags -->
                     <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
@@ -28,7 +28,7 @@
                             </span>
                         </div>
 
-                        {% if recipe.tags.all %}
+                        {% if recipe.tags.exists %}
                         <div class="d-flex flex-wrap justify-content-end gap-1">
                             {% for tag in recipe.tags.all %}
                             <span class="tag-pill tag-{{ tag.name|slugify }}">
@@ -39,10 +39,29 @@
                         {% endif %}
                     </div>
 
-                    <!-- Description -->
-                    <div class="recipe-description mt-4">
-                        {{ recipe.description|linebreaks }}
+                    <!-- Ingredients -->
+                    {% if recipe.ingredients %}
+                    <div class="mt-4">
+                        <h3 class="fw-bold">Ingredients</h3>
+                        <ul class="mt-2">
+                            {% for line in recipe.ingredients.splitlines %}
+                            {% if line %}
+                            <li>{{ line }}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
+                    {% endif %}
+
+
+                    <!-- Description -->
+                    <div class="mt-4">
+                        <h4 class="fw-bold mb-3">Description</h4>
+                        <div class="recipe-description">
+                            {{ recipe.description|linebreaks }}
+                        </div>
+                    </div>
+
 
                     {% if recipe.user == user %}
                     <!-- Delete button -->

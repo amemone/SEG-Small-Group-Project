@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from recipes.models import User
 
+
 class UserModelTestCase(TestCase):
     """Unit tests for the User model."""
 
@@ -56,7 +57,6 @@ class UserModelTestCase(TestCase):
         self.user.username = '@@johndoe'
         self._assert_user_is_invalid()
 
-
     def test_first_name_must_not_be_blank(self):
         self.user.first_name = ''
         self._assert_user_is_invalid()
@@ -74,7 +74,6 @@ class UserModelTestCase(TestCase):
         self.user.first_name = 'x' * 51
         self._assert_user_is_invalid()
 
-
     def test_last_name_must_not_be_blank(self):
         self.user.last_name = ''
         self._assert_user_is_invalid()
@@ -91,7 +90,6 @@ class UserModelTestCase(TestCase):
     def test_last_name_must_not_contain_more_than_50_characters(self):
         self.user.last_name = 'x' * 51
         self._assert_user_is_invalid()
-
 
     def test_email_must_not_be_blank(self):
         self.user.email = ''
@@ -122,11 +120,9 @@ class UserModelTestCase(TestCase):
         self.user.email = 'johndoe@@example.org'
         self._assert_user_is_invalid()
 
-
     def test_full_name_must_be_correct(self):
         full_name = self.user.full_name()
         self.assertEqual(full_name, "John Doe")
-
 
     def test_default_gravatar(self):
         actual_gravatar_url = self.user.gravatar()
@@ -146,7 +142,6 @@ class UserModelTestCase(TestCase):
     def _gravatar_url(self, size):
         gravatar_url = f"{UserModelTestCase.GRAVATAR_URL}?size={size}&default=mp"
         return gravatar_url
-
 
     def _assert_user_is_valid(self):
         try:
