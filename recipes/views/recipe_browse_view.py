@@ -41,8 +41,10 @@ def recipe_browse_view(request):
     if date:
         recipes = recipes.filter(publication_date__date=date)
 
-    # Order by newest first
-    #recipes = recipes.order_by('-publication_date')
+    if popular:
+        recipes = filter_by_popularity(recipes)
+    else:
+        recipes = recipes.order_by('-publication_date')
 
     return render(request, 'recipes/recipe_browse.html', {
         'recipes': recipes,
@@ -52,9 +54,10 @@ def recipe_browse_view(request):
         'categories': categories,
         'selected_tags': tags,
         'selected_user': user_id,
-        'selected_date': date
+        'selected_date': date,
+        'popular' : popular
     })
 
 def filter_by_popularity(queryset):
-    queryset = queryset.annotate(favourite_count=Count('favourite'))
+    queryset = queryset.annotate(favourite_count=Count('favourites'))
     return queryset.order_by('-favourite_count', '-publication_date')
