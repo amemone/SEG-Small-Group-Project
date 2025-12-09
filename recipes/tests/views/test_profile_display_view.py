@@ -44,7 +44,7 @@ class ProfileDisplayViewTest(TestCase):
         self.assertEqual(list(response.context["user_followings"]), [])
         self.assertEqual(list(response.context["user_followers"]), [])
         
-        self.assertContains(response, "<b>No Users</b>", html=True)
+        self.assertContains(response, "<h5>No Users</h5>", html=True)
 
     def test_following_count_increases_when_following_someone(self):
         initial_count = Follow.objects.filter(follower = self.user).count()
@@ -120,7 +120,7 @@ class ProfileDisplayViewTest(TestCase):
     def test_following_empty_page_shows_no_users_message(self):
         response = self.client.get(self.url + "?following_page=99")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "<b>No Users</b>", html=True)
+        self.assertContains(response, "<h5>No Users</h5>", html=True)
 
     def test_profile_display_loads_successfully(self):
         response = self.client.get(self.url)
