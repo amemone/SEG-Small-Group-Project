@@ -10,10 +10,9 @@ is swallowed and generation continues.
 
 
 from faker import Faker
-from random import randint, random, sample
+from random import randint, random, sample, choice
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User
-from recipes.models import Follow
+from recipes.models import User, Follow, Recipe, Tag
 
 
 user_fixtures = [
@@ -35,6 +34,9 @@ class Command(BaseCommand):
         USER_COUNT (int): Target total number of users in the database.
         DEFAULT_PASSWORD (str): Default password assigned to all created users.
         NUMBER_OF_FOLLOWS (int): Target number of users each user is following.
+        NUMBER_OF_RECIPES (tuple): Range of number of recipes each user will create.
+        NUMBER_OF_INGREDIENTS (tuple): Range of number of ingredients each recipe will have.
+        NUMBER_OF_TAGS (tuple): Range of number of tags each recipe will have.
         help (str): Short description shown in ``manage.py help``.
         faker (Faker): Locale-specific Faker instance used for random data.
     """
@@ -42,12 +44,62 @@ class Command(BaseCommand):
     USER_COUNT = 200
     DEFAULT_PASSWORD = 'Password123'
     NUMBER_OF_FOLLOWS = 10
+    NUMBER_OF_RECIPES = (0,5)
+    NUMBER_OF_INGREDIENTS = (2,8)
+    NUMBER_OF_TAGS = (0,4)
     help = 'Seeds the database with sample data'
 
     def __init__(self, *args, **kwargs):
         """Initialize the command with a locale-specific Faker instance."""
         super().__init__(*args, **kwargs)
         self.faker = Faker('en_GB')
+        self.dishes = [
+            "Spaghetti Carbonara", "Chicken Tikka Masala", "Beef Bourguignon", "Sushi Rolls",
+            "Margherita Pizza", "Caesar Salad", "Beef Tacos", "Pad Thai", "Moussaka", "Ratatouille",
+            "Pho", "Bibimbap", "Fish and Chips", "Paella", "Goulash", "Butter Chicken",
+            "Lamb Kofta", "Falafel Wrap", "Shakshuka", "Ramen", "Spring Rolls", "Dumplings",
+            "Beef Stir Fry", "Grilled Salmon", "Eggplant Parmesan", "Chicken Curry", "Burger",
+            "Lasagna", "Tomato Soup", "Greek Salad", "Chicken Wings", "Fried Rice",
+            "Beef Bulgogi", "Chicken Shawarma", "Clam Chowder", "Guacamole", "Nachos",
+            "Hummus", "Tandoori Chicken", "Chili con Carne", "Fajitas", "Enchiladas",
+            "Ceviche", "Couscous", "Gyoza", "Tempura", "Sashimi", "Teriyaki Chicken",
+            "Peking Duck", "Mapo Tofu", "Kimchi", "Jambalaya", "Gumbo", "Crawfish Etouffee",
+            "Poutine", "Shepherd's Pie", "Bangers and Mash", "Corned Beef", "Irish Stew",
+            "Beef Wellington", "Yorkshire Pudding", "Black Forest Cake", "Tiramisu",
+            "Crème Brûlée", "Apple Pie", "Cheesecake", "Brownies", "Ice Cream Sundae"
+        ]
+        self.ingredients = [
+            "garlic", "olive oil", "onion", "tomatoes", "eggs",
+            "flour", "butter", "sugar", "salt", "black pepper",
+            "parmesan cheese", "basil", "chicken breast", "ground beef",
+            "rice", "pasta", "milk", "heavy cream", "lemons",
+            "bell peppers", "carrots", "celery", "potatoes", "spinach",
+            "mushrooms", "ginger", "soy sauce", "cilantro", "cumin",
+            "paprika", "cinnamon", "nutmeg", "thyme", "rosemary",
+            "oregano", "chili powder", "cayenne pepper", "honey",
+            "maple syrup", "vanilla extract", "baking powder",
+            "baking soda", "chocolate chips", "walnuts", "almonds",
+            "coconut milk", "quinoa", "lentils", "avocado", "feta cheese"
+        ]
+        self.visibility = [
+            'public',
+            'friends',
+            'me'
+        ]
+        self.difficulty = [
+            'Beginner',
+            'Intermediate',
+            'Advanced'
+        ]
+        self.default_tags = [
+            Tag.objects.get(name="Vegetarian"),
+            Tag.objects.get(name="Vegan"),
+            Tag.objects.get(name="Dairy-Free"),
+            Tag.objects.get(name="Gluten-Free"),
+            Tag.objects.get(name="High Protein"),
+            Tag.objects.get(name="Halal"),
+            Tag.objects.get(name="Nut-Free"),
+        ]
 
     def handle(self, *args, **options):
         """
@@ -62,7 +114,7 @@ class Command(BaseCommand):
     def create_users(self):
         """
         Create fixture users and then generate random users up to USER_COUNT, as well as
-        creating follow relations for each user.
+        creating follow relations for each user, as well as recipes for each user.
 
         The process is idempotent in spirit: attempts that fail (e.g., due to
         uniqueness constraints on username/email) are ignored and generation continues.
@@ -70,6 +122,7 @@ class Command(BaseCommand):
         self.generate_user_fixtures()
         self.generate_random_users()
         self.create_all_follows(self.NUMBER_OF_FOLLOWS)
+        self.create_all_recipes(self.NUMBER_OF_RECIPES, self.NUMBER_OF_INGREDIENTS, self.NUMBER_OF_TAGS)
 
     def generate_user_fixtures(self):
         """Attempt to create each predefined fixture user."""
@@ -157,6 +210,61 @@ class Command(BaseCommand):
         )
         for followee in users_to_follow:
             Follow.objects.create(follower=user, followee=followee)
+
+    def create_all_recipes(self, recipe_amount, ingredient_amount, tag_amount):
+        """
+        Create recipes for all users.
+
+        Args:
+            recipe_amount (tuple): the minimum and maximum recipes a user will create.
+            ingredient_amount (tuple): the mimimum and maximum ingredients a recipe will have.
+            tag_amount (tuple): the minimum and maximum tags a recipe will have.
+        """
+        all_users = User.objects.all()
+        for user in all_users:
+            print(f"Creating recipes for {user.username}", end='\r')
+            self.create_recipe(user, recipe_amount, ingredient_amount, tag_amount)
+
+    def create_recipe(self, user, recipe_amount, ingredient_amount, tag_amount):
+        """
+        Create recipes for one user.
+
+        Args:
+            user (User): the user that recipes are being created for.
+            recipe_amount (tuple): the minimum and maximum recipes a user will create.
+            ingredient_amount (tuple): the mimimum and maximum ingredients a recipe will have.
+            tag_amount (tuple): the minimum and maximum tags a recipe will have.
+        """
+        for i in range(randint(recipe_amount[0], recipe_amount[1])):
+            recipe = Recipe.objects.create(
+                title = choice(self.dishes),
+                description = self.faker.sentence(nb_words=10),
+                ingredients = self.select_ingredients(ingredient_amount),
+                user = user,
+                visibility = choice(self.visibility),
+                difficulty = choice(self.difficulty)
+            )
+
+            tags = sample(self.default_tags, randint(tag_amount[0], min(tag_amount[1], len(self.default_tags))))
+            recipe.tags.add(*tags)
+            recipe.save()
+
+    def select_ingredients(self, ingredient_amount):
+        """
+        Construct a list of ingredients from the ingredients list.
+
+        Args:
+            ingredient_amount (tuple): the mimimum and maximum ingredients a recipe will have.
+
+        Returns:
+            str: A list of ingredients separated by \n.
+        """
+        ingredients = []
+        for i in range(randint(ingredient_amount[0], ingredient_amount[1])):
+            ingredients.append(choice(self.ingredients))
+        return "\n".join(ingredients)
+
+
 
 def create_username(first_name, last_name):
     """
