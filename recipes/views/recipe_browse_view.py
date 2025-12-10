@@ -43,8 +43,7 @@ def recipe_browse_view(request):
 
     if popular:
         recipes = filter_by_popularity(recipes)
-    else:
-        recipes = recipes.order_by('-publication_date')
+    
 
     return render(request, 'recipes/recipe_browse.html', {
         'recipes': recipes,
