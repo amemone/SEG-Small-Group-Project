@@ -31,6 +31,22 @@
         </li>
     </ul>
 
+    <!--Filter Recipes-->
+    <form method="get" action="{% url 'feed' %}" class="filter-bar mb-3">
+    {% if selected_difficulty %}
+      <input type="hidden" name="difficulty" value="{{ selected_difficulty }}">
+    {% endif %}
+
+    <button type="submit" name="sort" value="popular"
+            class="btn btn-primary {% if sort == 'popular' %}active{% endif %}">
+        Sort by popularity
+    </button>
+    <button type="submit" name="sort" value="recent"
+            class="btn btn-primary {% if sort != 'popular' %}active{% endif %}">
+        Sort by recent
+    </button>
+</form>
+
     <!-- Messages -->
     {% if messages %}
     <div class="row mb-3">

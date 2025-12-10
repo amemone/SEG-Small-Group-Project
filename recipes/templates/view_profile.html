@@ -28,7 +28,7 @@
                 <ul class="pagination">
                     {% if user_followings.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?following_page={{user_followings.previous_page_number }}">
+                            <a class="page-link btn btn-primary" href="?following_page={{user_followings.previous_page_number }}">
                                 Previous
                             </a>
                         </li>
@@ -42,7 +42,7 @@
 
                     {% if user_followings.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?following_page={{ user_followings.next_page_number }}">
+                            <a class="page-link btn btn-primary" href="?following_page={{ user_followings.next_page_number }}">
                                 Next
                             </a>
                         </li>
@@ -72,7 +72,7 @@
                     <ul class="pagination">
                         {% if user_followers.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?follower_page={{ user_followers.previous_page_number }}">
+                            <a class="page-link btn btn-primary" href="?follower_page={{ user_followers.previous_page_number }}">
                                 Previous
                             </a>
                         </li>
@@ -86,7 +86,7 @@
 
                         {% if user_followers.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?follower_page={{ user_followers.next_page_number }}">
+                                <a class="page-link btn btn-primary" href="?follower_page={{ user_followers.next_page_number }}">
                                     Next
                                 </a>
                             </li>
