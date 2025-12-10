@@ -35,9 +35,9 @@
     <h3 class="section-header">Most Popular Recipes This Month</h3>
 
     {% if popular_recipes %}
-      <div class="row mt-3">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for recipe in popular_recipes %}
-          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div class="col">
             {% include "recipes/recipe_card.html" with recipe=recipe user=user %}
           </div>
         {% endfor %}

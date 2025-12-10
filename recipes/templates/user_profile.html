@@ -46,16 +46,15 @@
     {% if recipes %}
     <section id="user-recipes" class="mt-4">
         <h3>{{ profile_user.username }}'s Recipes</h3>
-            <div class="row mt-2">
-                {% for recipe in recipes %}
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                {% include "recipes/recipe_card.html" with recipe=recipe show_fav_button=False %}
+                {% for recipe in recipes %}
+                    <div class="col">
+                        {% include "recipes/recipe_card.html" with recipe=recipe show_fav_button=False %}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
 
     {% include "recipes/recipes_page.html" with recipes_page=recipes %}
-
     </section>
 
     {% else %}
