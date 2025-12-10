@@ -51,6 +51,7 @@ def profile_display_view(request):
          'followers': get_follower_count(user),
          'user_followers': paginate_followers(request, user),
          'user_name': user.username,
+         'user_avatar': user.gravatar(),
          'favourites': get_favourites_user(request, user)
     }
     return render(request, 'view_profile.html',context)
