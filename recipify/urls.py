@@ -27,6 +27,7 @@ from recipes.views.recipe_browse_view import recipe_browse_view
 from recipes.views.user_browse_view import user_browse_view
 from recipes.views.profile_display_view import profile_display_view
 from recipes.views.favourite_view import toggle_favourite
+from recipes.views.recipe_comment import recipe_comment
 
 
 urlpatterns = [
@@ -49,5 +50,6 @@ urlpatterns = [
     path('view_profile/', profile_display_view, name='view_profile'),
     path("toggle_favourite/", toggle_favourite, name="toggle_favourite"),
     path('recipe/<int:pk>/',views.RecipeFullView.as_view(), name='view_recipe'),
+    path('recipes/<int:recipe_id>/', recipe_comment, name='recipe_comment'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
