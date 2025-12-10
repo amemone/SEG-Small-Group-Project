@@ -527,3 +527,25 @@ h1 {
   color: #ff4d4d !important;
   /* bright red */
 }
+
+/* Username links in recipe details */
+a.user-link {
+  color: #6c757d;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a.user-link:hover {
+  color: #6c757d;
+}
+
+/* Username link in profiles */
+a.user-link-dark {
+    color: #000;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a.user-link-dark:hover {
+  color: #000;
+}
