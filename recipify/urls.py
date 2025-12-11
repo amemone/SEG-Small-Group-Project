@@ -27,6 +27,7 @@ from recipes.views.recipe_browse_view import recipe_browse_view
 from recipes.views.user_browse_view import user_browse_view
 from recipes.views.profile_display_view import profile_display_view
 from recipes.views.favourite_view import toggle_favourite
+from recipes.views.user_profile_view import user_profile_view
 from recipes.views.recipe_comment import recipe_comment
 from recipes.views.mark_notification_read import mark_notification_read
 
@@ -51,6 +52,7 @@ urlpatterns = [
     path('view_profile/', profile_display_view, name='view_profile'),
     path("toggle_favourite/", toggle_favourite, name="toggle_favourite"),
     path('recipe/<int:pk>/',views.RecipeFullView.as_view(), name='view_recipe'),
+    path('profile/<str:username>/', user_profile_view, name='user_profile'),
     path('recipes/<int:recipe_id>/', recipe_comment, name='recipe_comment'),
     path('notification/<int:notification_id>/redirect/', mark_notification_read, name='notification_read'),
 

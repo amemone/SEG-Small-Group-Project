@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models import Count
 from recipes.models.recipes import Recipe
 from datetime import timedelta
+from recipes.helpers import paginate_recipes_user
 
 
 @login_required
@@ -26,6 +27,11 @@ def dashboard(request):
     current_user = request.user
     user_recipes = Recipe.objects.filter(
         user=current_user).order_by('-publication_date')
+    recipes_page = paginate_recipes_user(
+        request,
+        viewer = current_user,
+        profile_user = current_user
+    )
     
     one_month_ago = timezone.now() - timedelta(days=30)
 
@@ -40,6 +46,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', {
         'user': current_user,
         'recipes': user_recipes,
+        'recipes_page': recipes_page,
         'show_delete': True,
         "popular_recipes": popular_recipes,
         "unread_count": unread_count,

@@ -172,9 +172,9 @@ class ProfileDisplayViewTest(TestCase):
             Favourite.objects.create(user=self.user, recipe=recipe)
         response = self.client.get(self.url + "?page=1")
         first_page = response.context["favourites"]
-        self.assertEqual(len(first_page), 12)
+        self.assertEqual(len(first_page), 9)
         self.assertTrue(first_page.has_next())
         response = self.client.get(self.url + "?page=2")
         second_page = response.context["favourites"]
-        self.assertEqual(len(second_page), 1)
+        self.assertEqual(len(second_page), 4)
         self.assertFalse(second_page.has_next())

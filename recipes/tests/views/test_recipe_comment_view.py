@@ -22,16 +22,16 @@ class RecipeCommentViewTestCase(TestCase):
         self.view_url = reverse('view_recipe', kwargs={'pk': self.recipe.id})
 
     def test_redirect_if_not_logged_in(self):
-        response = self.client.post(self.comment_url, {'text': 'Nice recipe!'})
+        response = self.client.post(self.comment_url, {'text': 'Delicious!'})
         login_url = reverse('log_in') + f"?next={self.comment_url}"
         self.assertRedirects(response, login_url)
 
     def test_valid_comment_creates_comment(self):
         self.client.force_login(self.user)
-        response = self.client.post(self.comment_url, {'text': 'Nice recipe!'})
+        response = self.client.post(self.comment_url, {'text': 'Delicious!'})
         self.assertRedirects(response, self.view_url)
         comment = Comment.objects.get(recipe=self.recipe, user=self.user)
-        self.assertEqual(comment.text, 'Nice recipe!')
+        self.assertEqual(comment.text, 'Delicious!')
 
     def test_notification_created_for_other_user(self):
         self.client.force_login(self.user)
