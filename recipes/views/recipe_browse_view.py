@@ -14,6 +14,7 @@ def recipe_browse_view(request):
     tags = request.GET.getlist('tag')
     category = request.GET.get('category')
     popular = request.GET.get('popular')
+    unread_count = request.user.notifications.filter(is_read=False).count()
 
     if user_id:
         user_id = int(user_id)  # convert to integer for comparison in template
@@ -41,8 +42,15 @@ def recipe_browse_view(request):
     if date:
         recipes = recipes.filter(publication_date__date=date)
 
+    if category:
+        recipes = recipes.filter(difficulty=category)
+
     # Order by newest first
     #recipes = recipes.order_by('-publication_date')
+
+    selected_difficulty = request.GET.get('difficulty')
+    if selected_difficulty in [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]:
+        recipes = recipes.filter(difficulty=selected_difficulty)
 
     return render(request, 'recipes/recipe_browse.html', {
         'recipes': recipes,
@@ -52,7 +60,9 @@ def recipe_browse_view(request):
         'categories': categories,
         'selected_tags': tags,
         'selected_user': user_id,
-        'selected_date': date
+        'selected_date': date,
+        'selected_difficulty': selected_difficulty,
+        "unread_count": unread_count,
     })
 
 def filter_by_popularity(queryset):

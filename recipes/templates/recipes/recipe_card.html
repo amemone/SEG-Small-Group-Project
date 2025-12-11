@@ -1,28 +1,35 @@
 {% load favourite_tags %}
 
-<div class="card mb-3 position-relative card-hover">
-    <a href="{% url 'view_recipe' recipe.id %}" class="text-decoration-none text-dark">
+<div class="card recipe-card shadow-sm border-0 card-hover">
+
+    <a href="{% url 'view_recipe' recipe.id %}" class="text-decoration-none text-dark d-block h-100 w-100">
         <div class="card-body">
-            <h5 class="card-title">{{ recipe.title }}</h5>
-            <div style="height: 15px;"></div>
-            <p class="card-text">
+
+            <!-- Title -->
+            <h5 class="card-title mb-2">{{ recipe.title }}</h5>
+
+            <!-- Description -->
+            <p class="card-text mb-3">
                 {{ recipe.description|truncatewords:20 }}
             </p>
 
+            <!-- Tags -->
             {% if recipe.tags.all %}
-            <div class="mt-2">
+            <div class="mb-2">
                 {% for tag in recipe.tags.all %}
                 <span class="tag-pill tag-{{ tag.name|slugify }}">{{ tag.name }}</span>
                 {% endfor %}
             </div>
             {% endif %}
 
-            <p class="card-text">
+            <!-- Date -->
+            <p class="card-text mb-3">
                 <small class="text-muted">
                     Posted on {{ recipe.publication_date|date:"M d, Y" }}
                 </small>
             </p>
 
+            <!-- Delete Button -->
             {% if recipe.user_id == user.id %}
             <form method="post" action="{% url 'recipe_delete' %}" onclick="event.stopPropagation();">
                 {% csrf_token %}
@@ -33,11 +40,11 @@
                 </button>
             </form>
             {% endif %}
-
         </div>
     </a>
 
-    <div class="position-absolute top-0 end-0 m-2 d-flex flex-column align-items-end" style="z-index: 20;">
+    <!-- Favourites -->
+    <div class="position-absolute favorite-wrapper">
 
         {% if request.user.is_authenticated %}
         <form class="favorite-form" method="post" data-recipe-id="{{ recipe.id }}" onclick="event.stopPropagation();">
@@ -50,13 +57,18 @@
                 {% endif %}
             </button>
         </form>
+
         <form class="favorite-form" method="post" data-recipe-id="{{ recipe.id }}" onclick="event.stopPropagation();">
             {% csrf_token %}
-            <button type="button" class="btn btn-sm favourite-btn p-1 border-0 bg-transparent">
+            <button type="button" class="btn favourite-btn p-1 border-0 bg-transparent">
                 <i class="bi bi-heart{% if recipe|is_favourited:request.user %}-fill text-danger{% endif %}"
-                    style="font-size:1.9rem;"></i>
+                    style="font-size:1.7rem;"></i>
             </button>
         </form>
+
+        <div class="text-muted small favourite-count">
+            {{ recipe.get_favourite_count }} favourites
+        </div>
 
         {% else %}
         <a class="btn btn-sm btn-outline-secondary" href="{% url 'log_in' %}?next={{ request.get_full_path }}"
@@ -64,21 +76,17 @@
             Log in
         </a>
         {% endif %}
-
-        <div class="text-muted small favourite-count mt-1">
-            {{ recipe.get_favourite_count }} favourites
-        </div>
-
-
-
     </div>
-    <div class="position-absolute bottom-0 end-0 m-2">
-        <span class="text-muted small favourite-count mt-1">
+
+    <!-- Visibility -->
+    <div class="position-absolute visibility-badge">
+        <span class="text-muted small">
             {{ recipe.get_visibility_display }}
         </span>
     </div>
 
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -91,7 +99,7 @@
 
             btn.addEventListener("click", async (e) => {
                 e.preventDefault();
-                e.stopPropagation(); // Prevent opening card
+                e.stopPropagation();
                 btn.disabled = true;
 
                 const recipeId = form.dataset.recipeId;
@@ -107,20 +115,20 @@
                 const data = await response.json();
 
                 if (data.is_favourited) {
-                    icon.classList.add("bi-heart-fill", "text-danger");
-                    icon.classList.remove("bi-heart");
+                    icon?.classList.add("bi-heart-fill", "text-danger");
+                    icon?.classList.remove("bi-heart");
                 } else {
-                    icon.classList.remove("bi-heart-fill", "text-danger");
-                    icon.classList.add("bi-heart");
+                    icon?.classList.remove("bi-heart-fill", "text-danger");
+                    icon?.classList.add("bi-heart");
                 }
 
-                const countElement = form.closest(".position-absolute").querySelector(".favourite-count");
+                const countElement = form.closest(".favorite-wrapper").querySelector(".favourite-count");
                 if (countElement) {
                     countElement.textContent = `${data.favourite_count} favourites`;
                 }
+
                 btn.disabled = false;
             });
         });
     });
-
 </script>

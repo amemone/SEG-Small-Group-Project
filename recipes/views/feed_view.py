@@ -10,6 +10,7 @@ from recipes.models.follow import Follow
 def feed_view(request):
     viewer = request.user
     recipes = Recipe.objects.all().select_related('user').prefetch_related('tags')
+    unread_count = request.user.notifications.filter(is_read=False).count()
 
     owner_follows_viewer = Follow.objects.filter(
         follower=OuterRef('user'),
@@ -40,5 +41,6 @@ def feed_view(request):
         'recipes': recipes,
         'categories': categories,
         'selected_difficulty': selected_difficulty,
+        "unread_count": unread_count,
     }
     return render(request, 'recipes/feed.html', context)

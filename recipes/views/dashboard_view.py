@@ -35,9 +35,12 @@ def dashboard(request):
         .order_by("-fav_count", "-publication_date")[:12]
     )
 
+    unread_count = request.user.notifications.filter(is_read=False).count()
+
     return render(request, 'dashboard.html', {
         'user': current_user,
         'recipes': user_recipes,
         'show_delete': True,
         "popular_recipes": popular_recipes,
+        "unread_count": unread_count,
     })

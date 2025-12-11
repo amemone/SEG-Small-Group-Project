@@ -1,46 +1,44 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
+<div class="container py-4">
 
   <!-- Welcome -->
-  <div class="row dashboard-header">
+  <div class="row mb-4">
     <div class="col-12">
-      <h1>Welcome to your dashboard, {{ user.username }}!</h1>
+      <h1 class="display-5 fw-bold">Welcome back, {{ user.username }}!</h1>
     </div>
   </div>
 
-  <!-- My Recipes -->
-  <div class="row">
-    <div class="col-12">
-      <h2 class="section-header">My Recipes</h2>
+  <!-- My Recipes Section -->
+  <section class="mb-5">
+    <h2 class="section-header mb-3">My Recipes</h2>
 
-      {% if recipes.exists %}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {% for recipe in recipes %}
-            <div class="col">
-              {% include 'recipes/recipe_card.html' with recipe=recipe %}
-            </div>
-          {% endfor %}
+    {% if recipes.exists %}
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for recipe in recipes %}
+        <div class="col">
+          {% include 'recipes/recipe_card.html' with recipe=recipe %}
         </div>
-      {% else %}
-        <div class="alert alert-info mt-3">
-          <p class="mb-2">You haven't created any recipes yet.</p>
-          <a href="{% url 'recipe_create' %}" class="btn btn-primary">Create Your First Recipe</a>
-        </div>
-      {% endif %}
-    </div>
-  </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info d-flex justify-content-between align-items-center p-4 shadow-sm rounded-3">
+        <span>You haven't created any recipes yet.</span>
+        <a href="{% url 'recipe_create' %}" class="btn btn-primary">Create Your First Recipe</a>
+      </div>
+    {% endif %}
+  </section>
 
-  <!-- Popular Recipes -->
-  <section id="popular-month" class="popular-recipes mt-5">
-    <h3 class="section-header">Most Popular Recipes This Month</h3>
+  <!-- Popular Recipes Section -->
+  <section class="popular-recipes">
+    <h3 class="section-header mb-3">Most Popular Recipes This Month</h3>
 
     {% if popular_recipes %}
-      <div class="row mt-3">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2">
         {% for recipe in popular_recipes %}
-          <div class="col">
-            {% include "recipes/recipe_card.html" with recipe=recipe user=user %}
-          </div>
+        <div class="col">
+          {% include 'recipes/recipe_card.html' with recipe=recipe user=user %}
+        </div>
         {% endfor %}
       </div>
     {% else %}

@@ -37,15 +37,17 @@
     </form>
 
     <!-- Category Tabs -->
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item">
-            <a class="nav-link {% if not selected_category %}active{% endif %}" href="{% url 'recipe_browse' %}">All</a>
-        </li>
+    <ul class="nav nav-tabs mb-4">
         {% for cat in categories %}
         <li class="nav-item">
-            <a class="nav-link {% if selected_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat }}</a>
+            <a class="nav-link {% if selected_difficulty == cat %}active{% endif %}" 
+               href="?difficulty={{ cat }}">{{ cat }}</a>
         </li>
         {% endfor %}
+        <li class="nav-item">
+            <a class="nav-link {% if not selected_difficulty %}active{% endif %}" 
+               href="{% url 'recipe_browse' %}">All</a>
+        </li>
     </ul>
 
     <!-- Recipes List -->
