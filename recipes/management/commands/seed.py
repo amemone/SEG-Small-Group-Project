@@ -91,6 +91,16 @@ class Command(BaseCommand):
             'Intermediate',
             'Advanced'
         ]
+        self.time = [
+            '5',
+            '10',
+            '15',
+            '20',
+            '30',
+            '45',
+            '60',
+            '90'
+        ]
         self.default_tags = [
             Tag.objects.get(name="Vegetarian"),
             Tag.objects.get(name="Vegan"),
@@ -242,7 +252,8 @@ class Command(BaseCommand):
                 ingredients = self.select_ingredients(ingredient_amount),
                 user = user,
                 visibility = choice(self.visibility),
-                difficulty = choice(self.difficulty)
+                difficulty = choice(self.difficulty),
+                time_required = choice(self.time)
             )
 
             tags = sample(self.default_tags, randint(tag_amount[0], min(tag_amount[1], len(self.default_tags))))
