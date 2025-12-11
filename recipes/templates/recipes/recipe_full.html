@@ -5,12 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-lg-9">
 
-            <!-- Back button -->
-            <a href="javascript:void(0)"
-                onclick="if(document.referrer && document.referrer != window.location.href){window.location.href = document.referrer;} else {window.history.back();}"
-                class="btn btn-outline-secondary mb-3">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary mb-3">
                 ← Back
             </a>
+
 
             <div class="card shadow-sm">
                 <div class="card-body p-4">
