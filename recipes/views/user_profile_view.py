@@ -11,14 +11,21 @@ from recipes.helpers import (
 
 def user_profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
+    if request.user.is_authenticated:
+        is_following = user_is_following(request.user, profile_user)
+        recipes = paginate_recipes_user(request, request.user, profile_user)
+    else:
+        is_following = False
+        recipes = paginate_recipes_user(request, None, profile_user)
+
     context = {
         'profile_user': profile_user,
         'following': get_following_count(profile_user),
         'user_followings': paginate_following(request, profile_user),
         'followers': get_follower_count(profile_user),
         'user_followers': paginate_followers(request, profile_user),
-        'is_following': user_is_following(request.user, profile_user),
-        'recipes': paginate_recipes_user(request, request.user, profile_user),
+        'is_following': is_following,
+        'recipes': recipes,
     }
 
     return render(request, 'user_profile.html', context)
