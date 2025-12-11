@@ -30,7 +30,7 @@
         <div class="col-md-4 mb-4 px-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    {% include "partials/users_page.html" with title="Following" count=user_followings_count page=user_followings page_parameter="following_page" %}
+                    {% include "partials/users_page.html" with title="Following" count=following page=user_followings page_parameter="following_page" %}
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="col-md-4 mb-4 px-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    {% include "partials/users_page.html" with title="Followers" count=user_followers_count page=user_followers page_parameter="follower_page" %}
+                    {% include "partials/users_page.html" with title="Followers" count=followers page=user_followers page_parameter="follower_page" %}
                 </div>
             </div>
         </div>
