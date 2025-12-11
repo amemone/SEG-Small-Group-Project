@@ -1,6 +1,17 @@
 from django import forms
 from recipes.models.recipes import Recipe, Tag
 
+TIME_CHOICES = [
+    ('5', '5 minutes'),
+    ('10', '10 minutes'),
+    ('15', '15 minutes'),
+    ('20', '20 minutes'),
+    ('30', '30 minutes'),
+    ('45', '45 minutes'),
+    ('60', '1 hour'),
+    ('90', '1 hour 30 minutes'),
+]
+
 
 class RecipeForm(forms.ModelForm):
     """
@@ -21,10 +32,17 @@ class RecipeForm(forms.ModelForm):
         required=False,
     )
 
+    time_required = forms.ChoiceField(
+        choices=TIME_CHOICES,
+        required=False,
+        label="Time To Cook:",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         """Form options."""
         model = Recipe
-        fields = ['title', 'ingredients', 'description', 'visibility', 'tags']
+        fields = ['title', 'ingredients', 'description', 'visibility', 'tags', 'difficulty', 'time_required']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',

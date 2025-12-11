@@ -20,12 +20,25 @@
                 <option value="{{ u.id }}" {% if selected_user == u.id %}selected{% endif %}>{{ u.username }}</option>
             {% endfor %}
         </select>
+        <select name="time" class="time-select mb-2">
+            <option value="">Time To Cook</option>
+            <option value="5" {% if selected_time == "5" %}selected{% endif %}>5 minutes</option>
+            <option value="10" {% if selected_time == "10" %}selected{% endif %}>10 minutes</option>
+            <option value="15" {% if selected_time == "15" %}selected{% endif %}>15 minutes</option>
+            <option value="20" {% if selected_time == "20" %}selected{% endif %}>20 minutes</option>
+            <option value="30" {% if selected_time == "30" %}selected{% endif %}>30 minutes</option>
+            <option value="45" {% if selected_time == "45" %}selected{% endif %}>45 minutes</option>
+            <option value="60" {% if selected_time == "60" %}selected{% endif %}>1 hour</option>
+            <option value="90" {% if selected_time == "90" %}selected{% endif %}>1 hour 30 minutes</option>
+            <option value="120" {% if selected_time == "120" %}selected{% endif %}>2 hours</option>
+        </select>
+
         <button type="submit" class="btn btn-primary">Search</button>
         <button type="submit" name="popular" value="1" class="btn btn-primary">Sort by popularity</button>
         <button type="submit" class="btn btn-primary">Sort by recent</button>
 
 
-        <!-- Tag Filters inside the form -->
+        <!-- Tag Filters -->
         <div class="tags-filter">
             {% for tag in tags %}
             <input type="checkbox" name="tag" value="{{ tag.name }}" id="tag-{{ forloop.counter }}" class="tag-checkbox"
@@ -34,25 +47,26 @@
             {% endfor %}
         </div>
 
-        <!-- Preserve category in the search -->
         {% if selected_category %}
         <input type="hidden" name="category" value="{{ selected_category }}">
         {% endif %}
     </form>
 
     <!-- Category Tabs -->
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item">
-            <a class="nav-link {% if not selected_category %}active{% endif %}" href="{% url 'recipe_browse' %}">All</a>
-        </li>
+    <ul class="nav nav-tabs mb-4">
         {% for cat in categories %}
         <li class="nav-item">
-            <a class="nav-link {% if selected_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat }}</a>
+            <a class="nav-link {% if selected_difficulty == cat %}active{% endif %}" 
+               href="?difficulty={{ cat }}">{{ cat }}</a>
         </li>
         {% endfor %}
+        <li class="nav-item">
+            <a class="nav-link {% if not selected_difficulty %}active{% endif %}" 
+               href="{% url 'recipe_browse' %}">All</a>
+        </li>
     </ul>
 
-    <!-- Recipes Grid -->
+    <!-- Recipes List -->
     {% if recipes %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for recipe in recipes %}
