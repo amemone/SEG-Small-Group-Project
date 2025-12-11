@@ -1,0 +1,64 @@
+{% extends 'base_content.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold mb-2">{{ profile_user.username }}</h2>
+            <div class="mt-3">
+            {% if is_following %}
+                <form action="{% url 'unfollow_user' profile_user.username %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button class="btn btn-secondary">
+                        Unfollow
+                    </button>
+                </form>
+            {% else %}
+                <form action="{% url 'follow_user' profile_user.username %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button class="btn btn-primary">
+                        Follow
+                    </button>
+                </form>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-4 mb-4 px-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% include "partials/users_page.html" with title="Following" count=user_followings_count page=user_followings page_parameter="following_page" %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4 px-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% include "partials/users_page.html" with title="Followers" count=user_followers_count page=user_followers page_parameter="follower_page" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if recipes %}
+    <section id="user-recipes" class="mt-4">
+        <h3>{{ profile_user.username }}'s Recipes</h3>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for recipe in recipes %}
+                    <div class="col">
+                        {% include "recipes/recipe_card.html" with recipe=recipe show_fav_button=False %}
+                    </div>
+                {% endfor %}
+            </div>
+
+    {% include "recipes/recipes_page.html" with recipes_page=recipes %}
+    </section>
+
+    {% else %}
+        <p class="text-muted mt-3">{{ profile_user.username }} has not added any recipes yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

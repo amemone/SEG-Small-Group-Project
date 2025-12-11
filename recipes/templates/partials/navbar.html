@@ -8,30 +8,6 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
-    <div class="mx=3">
-      <a class="navbar-brand" href="{% url 'dashboard' %}">
-        Dashboard
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
-    <div class="mx-3">
-      <a class="navbar-brand" href="{% url 'feed' %}">
-        See Feed
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
-    <div class="mx-3">
-      <a class="navbar-brand" href="{% url 'user_browse' %}">
-        Search user
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
     {% if user.is_authenticated %}
       {% include 'partials/menu.html' %}
     {% endif %}

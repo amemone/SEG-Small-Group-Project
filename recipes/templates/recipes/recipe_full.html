@@ -19,8 +19,16 @@
                             <h1 class="display-5 fw-bold mb-1">{{ recipe.title }}</h1>
 
                             <p class="text-muted mb-0">
-                                Posted by <strong>{{ recipe.user.username }}</strong> on
-                                {{ recipe.publication_date|date:"M d, Y" }}
+                                Posted by
+                                {% if recipe.user == user %}
+                                    <a href="{% url 'view_profile' %}" class="user-link">
+                                        {{ recipe.user.username }}</a>
+                                {% else %}
+                                    <a href="{% url 'user_profile' recipe.user.username %}" class="user-link">
+                                        {{ recipe.user.username }}
+                                    </a>
+                                {% endif %}
+                                on {{ recipe.publication_date|date:"M d, Y" }}
                             </p>
 
                             <span class="badge bg-secondary mt-2">

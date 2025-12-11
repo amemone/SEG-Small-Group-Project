@@ -1,142 +1,52 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-12">
             <h1>Your Profile</h1>
             <img src="{{ user_avatar }}" alt="Avatar" class="rounded-circle" width="70" height="70">
-            <h2>{{ user_name }}</h2>
         </div>
     </div>
 
-    <br>
-
-    <div class="row justify-content-center">
-        <div class="col-md-4 offset-md-1">
-            <h3>Following:</h3>
-            <p>{{ following }}</p>
-
-            <h4>Users You Follow:</h4>
-            {% if user_followings and user_followings.object_list %}
-                {% for u in user_followings %}
-                    <div class="d-flex align-items-center gap-2 mb-2 w-100">
-                        <img src="{{ u.gravatar }}" alt="Avatar" class="rounded-circle" width="30" height="30">
-                        <span>{{ u.username }}</span>
-                    </div>
-                {% endfor %}
-            <nav aria-label="following_pagination">
-                <ul class="pagination">
-                    {% if user_followings.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link btn btn-primary" href="?following_page={{user_followings.previous_page_number }}">
-                                Previous
-                            </a>
-                        </li>
-                    {% endif %}
-
-                    <li class="page-item disabled">
-                        <span class="page-link btn btn-primary">
-                        Page {{ user_followings.number }} of {{ user_followings.paginator.num_pages }}
-                        </span>
-                    </li>
-
-                    {% if user_followings.has_next %}
-                        <li class="page-item">
-                            <a class="page-link btn btn-primary" href="?following_page={{ user_followings.next_page_number }}">
-                                Next
-                            </a>
-                        </li>
-                    {% endif %}
-
-                </ul>
-            </nav>
-            {% else %}
-                <h5>No Users</h5>
-            {% endif %}
-        </div>
-
-        <div class="col-md-4 offset-md-1">
-            <h3>Followers:</h3>
-            <p>{{ followers }}</p>
-
-            <h4>Users Following You:</h4>
-            {% if user_followers and user_followers.object_list %}
-                {% for u in user_followers %}
-                    <div class="d-flex align-items-center gap-2 mb-2 w-100">
-                        <img src="{{ u.gravatar }}" alt="Avatar" class="rounded-circle" width="30" height="30">
-                        <span>{{ u.username }}</span>
-                    </div>
-                {% endfor %}
-
-                <nav aria-label="Followers pagination">
-                    <ul class="pagination">
-                        {% if user_followers.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link btn btn-primary" href="?follower_page={{ user_followers.previous_page_number }}">
-                                Previous
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        <li class="page-item disabled">
-                            <span class="page-link btn btn-primary">
-                                Page {{ user_followers.number }} of {{ user_followers.paginator.num_pages }}
-                            </span>
-                        </li>
-
-                        {% if user_followers.has_next %}
-                            <li class="page-item">
-                                <a class="page-link btn btn-primary" href="?follower_page={{ user_followers.next_page_number }}">
-                                    Next
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% else %}
-            <h5>No Users</h5>
-            {% endif %}
-
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold mb-1">{{ user_name }}</h2>
         </div>
     </div>
+    
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-4 mb-4 px-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% include "partials/users_page.html" with title="Following" count=following page=user_followings page_parameter="following_page" %}
+        
+                </div>
+            </div>
+        </div>
 
-    {#Saved Recipes Section#}
+        <div class="col-md-4 mb-4 px-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% include "partials/users_page.html" with title="Followers" count=followers page=user_followers page_parameter="follower_page" %}
+                </div>
+            </div>    
+        </div>
+
+    </div>
+
     {% if favourites %}
     <section id="saved-recipes" class="mt-4">
         <h3>Saved Recipes</h3>
-        <div class="row">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for fav in favourites %}
-                <div class="col-12 col-sm-6 col-md-4 mb-4">
+                <div class="col">
                     {% include "recipes/recipe_card.html" with recipe=fav show_fav_button=False %}
                 </div>
             {% endfor %}
         </div>
+    
+        {% include "recipes/recipes_page.html" with recipes_page=favourites %}
 
-        {% if favourites.has_other_pages %}
-        <nav aria-label="Saved recipes pagination">
-            <ul class="pagination">
-                {% if favourites.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ favourites.previous_page_number }}">&laquo;</a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                {% endif %}
-
-                {% for num in favourites.paginator.page_range %}
-                    <li class="page-item {% if favourites.number == num %}active{% endif %}">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% endfor %}
-
-                {% if favourites.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ favourites.next_page_number }}">&raquo;</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
     </section>
     {% else %}
         <p class="text-muted mt-3">No saved recipes yet.</p>

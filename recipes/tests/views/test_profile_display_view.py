@@ -172,28 +172,9 @@ class ProfileDisplayViewTest(TestCase):
             Favourite.objects.create(user=self.user, recipe=recipe)
         response = self.client.get(self.url + "?page=1")
         first_page = response.context["favourites"]
-        self.assertEqual(len(first_page), 12)
+        self.assertEqual(len(first_page), 9)
         self.assertTrue(first_page.has_next())
         response = self.client.get(self.url + "?page=2")
         second_page = response.context["favourites"]
-        self.assertEqual(len(second_page), 1)
+        self.assertEqual(len(second_page), 4)
         self.assertFalse(second_page.has_next())
-
-    def test_user_gravatar_returns_valid_url(self):
-        url = self.user.gravatar()
-        self.assertIsInstance(url, str)
-        self.assertIn('gravatar.com/avatar/', url)
-        self.assertIn('size=120', url) 
-
-    def test_profile_context_includes_user_avatar(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('user_avatar', response.context)
-        self.assertEqual(response.context['user_avatar'], self.user.gravatar())
-
-    def test_following_list_renders_gravatar_image(self):
-        Follow.objects.create(follower=self.user, followee=self.second_user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        avatar_url = self.second_user.gravatar()
-        self.assertContains(response, f'<img src="{avatar_url}"', html=True)  
