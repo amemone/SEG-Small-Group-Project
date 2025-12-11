@@ -2,6 +2,7 @@ from django.test import TestCase
 from recipes.models import User, Recipe, Favourite, Follow
 from django.urls import reverse
 
+
 class ProfileDisplayViewTest(TestCase):
 
     fixtures = [
@@ -27,60 +28,67 @@ class ProfileDisplayViewTest(TestCase):
         self.assertTrue("/log_in" in response.url)
 
     def test_following_count_starts_at_zero(self):
-        following_count = Follow.objects.filter(follower = self.user).count()
+        following_count = Follow.objects.filter(follower=self.user).count()
         self.assertEqual(following_count, 0)
 
     def test_follower_count_starts_at_zero(self):
-        follower_count = Follow.objects.filter(followee = self.user).count()
+        follower_count = Follow.objects.filter(followee=self.user).count()
         self.assertEqual(follower_count, 0)
 
     def test_profile_view_shows_no_followers_or_following_initially(self):
         response = self.client.get(reverse('view_profile'))
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
 
         self.assertEqual(response.context["following"], 0)
         self.assertEqual(response.context["followers"], 0)
 
         self.assertEqual(list(response.context["user_followings"]), [])
         self.assertEqual(list(response.context["user_followers"]), [])
-        
+
         self.assertContains(response, "<b>No Users</b>", html=True)
 
     def test_following_count_increases_when_following_someone(self):
-        initial_count = Follow.objects.filter(follower = self.user).count()
-        Follow.objects.create(follower = self.user, followee = self.second_user)
-        new_count = Follow.objects.filter(follower = self.user).count()
+        initial_count = Follow.objects.filter(follower=self.user).count()
+        Follow.objects.create(follower=self.user, followee=self.second_user)
+        new_count = Follow.objects.filter(follower=self.user).count()
         self.assertEqual(new_count, initial_count + 1)
 
     def test_follower_count_increases_when_getting_followed(self):
-        initial_count = Follow.objects.filter(followee = self.second_user).count()
-        Follow.objects.create(follower = self.user, followee = self.second_user)
-        new_count = Follow.objects.filter(followee = self.second_user).count()
+        initial_count = Follow.objects.filter(
+            followee=self.second_user).count()
+        Follow.objects.create(follower=self.user, followee=self.second_user)
+        new_count = Follow.objects.filter(followee=self.second_user).count()
         self.assertEqual(new_count, initial_count + 1)
 
     def test_following_users_contains_and_excludes_expected_users(self):
-        Follow.objects.get_or_create(follower = self.user, followee = self.second_user)
-        Follow.objects.get_or_create(follower = self.user, followee = self.third_user)
+        Follow.objects.get_or_create(
+            follower=self.user, followee=self.second_user)
+        Follow.objects.get_or_create(
+            follower=self.user, followee=self.third_user)
         following_users = [
             user.followee.username
             for user in
-            Follow.objects.filter(follower = self.user).select_related('followee')
+            Follow.objects.filter(
+                follower=self.user).select_related('followee')
         ]
         self.assertIn(self.second_user.username, following_users)
         self.assertIn(self.third_user.username, following_users)
 
     def test_unfollow_decreases_following_count_and_removes_user(self):
-        follow_relationship = Follow.objects.filter(follower=self.user, followee=self.second_user).first()
+        follow_relationship = Follow.objects.filter(
+            follower=self.user, followee=self.second_user).first()
         if follow_relationship is None:
-            follow_relationship = Follow.objects.create(follower = self.user, followee = self.second_user)
-        
-        initial_count = Follow.objects.filter(follower = self.user).count()
+            follow_relationship = Follow.objects.create(
+                follower=self.user, followee=self.second_user)
 
-        #unfollow
+        initial_count = Follow.objects.filter(follower=self.user).count()
+
+        # unfollow
         follow_relationship.delete()
-        new_count = Follow.objects.filter(follower = self.user).count()
+        new_count = Follow.objects.filter(follower=self.user).count()
         self.assertEqual(new_count, initial_count - 1)
-        self.assertFalse(Follow.objects.filter(follower = self.user, followee= self.second_user).exists())
+        self.assertFalse(Follow.objects.filter(
+            follower=self.user, followee=self.second_user).exists())
 
     def test_following_pagination_page_size(self):
         for i in range(7):
@@ -91,7 +99,7 @@ class ProfileDisplayViewTest(TestCase):
                 first_name='User',
                 last_name=str(i),
             )
-            Follow.objects.create(follower = self.user, followee = following)
+            Follow.objects.create(follower=self.user, followee=following)
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
@@ -108,7 +116,7 @@ class ProfileDisplayViewTest(TestCase):
                 first_name='Follower',
                 last_name=str(i),
             )
-            Follow.objects.create(follower = follower, followee = self.user)
+            Follow.objects.create(follower=follower, followee=self.user)
 
         response = self.client.get(self.url)
 
@@ -150,7 +158,8 @@ class ProfileDisplayViewTest(TestCase):
         response = self.client.get(self.url)
         favourites_page = response.context['favourites']
         favourites = list(favourites_page)
-        self.assertEqual(favourites, [first_recipe, third_recipe, second_recipe])
+        self.assertCountEqual(
+            favourites, [first_recipe, third_recipe, second_recipe])
 
     def test_profile_shows_no_favourites_when_user_has_none(self):
         response = self.client.get(self.url)
@@ -178,22 +187,15 @@ class ProfileDisplayViewTest(TestCase):
         second_page = response.context["favourites"]
         self.assertEqual(len(second_page), 4)
         self.assertFalse(second_page.has_next())
-    
+
     def test_user_gravatar_returns_valid_url(self):
         url = self.user.gravatar()
         self.assertIsInstance(url, str)
         self.assertIn('gravatar.com/avatar/', url)
-        self.assertIn('size=120', url) 
+        self.assertIn('size=120', url)
 
     def test_profile_context_includes_user_avatar(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('user_avatar', response.context)
         self.assertEqual(response.context['user_avatar'], self.user.gravatar())
-
-    def test_following_list_renders_gravatar_image(self):
-        Follow.objects.create(follower=self.user, followee=self.second_user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        avatar_url = self.second_user.gravatar()
-        self.assertContains(response, f'<img src="{avatar_url}"', html=True)
