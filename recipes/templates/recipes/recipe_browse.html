@@ -34,7 +34,6 @@
         </select>
 
         <button type="submit" class="btn btn-primary">Search</button>
-
         <a class="btn btn-primary"
            href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}popular=1">
             Sort by popularity
