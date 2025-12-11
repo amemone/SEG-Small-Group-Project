@@ -52,9 +52,7 @@ def recipe_browse_view(request):
     
     if time_required:
         recipes = recipes.filter(time_required=time_required)
-
-    # Order by newest first
-    #recipes = recipes.order_by('-publication_date')
+        
     if popular:
         recipes = filter_by_popularity(recipes)
     
