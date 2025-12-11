@@ -71,11 +71,11 @@
         <form class="favorite-form" method="post" data-recipe-id="{{ recipe.id }}" onclick="event.stopPropagation();">
             {% csrf_token %}
             <button type="button" class="btn favourite-btn p-1 border-0 bg-transparent">
-            <button type="button" class="btn btn-sm favourite-btn p-1 border-0 bg-transparent">
-                <i class="bi bi-heart{% if recipe|is_favourited:request.user %}-fill text-danger{% endif %}"
-                    style="font-size:1.7rem;"></i>
+                <i class="bi bi-heart{% if recipe|is_favourited:request.user %}-fill text-danger{% endif %}" 
+                style="font-size:1.7rem;"></i>
             </button>
         </form>
+
 
         <div class="text-muted small favourite-count">
             {{ recipe.get_favourite_count }} favourites
