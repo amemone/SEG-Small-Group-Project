@@ -57,6 +57,11 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name='recipes')
     id = models.AutoField(primary_key=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    time_required = models.CharField(
+        max_length=10, 
+        blank=True, 
+        null=True
+    )
     favourites = models.ManyToManyField(
         User,
         related_name="favourite_recipes",

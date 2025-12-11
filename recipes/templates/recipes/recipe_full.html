@@ -23,15 +23,24 @@
                                 Posted by <strong>{{ recipe.user.username }}</strong> on
                                 {{ recipe.publication_date|date:"M d, Y" }}
                             </p>
-{% if recipe.get_difficulty_display == "Beginner" %}
-    <span class="badge bg-success mt-2 me-1">Beginner</span>
 
-{% elif recipe.get_difficulty_display == "Intermediate" %}
-    <span class="badge bg-warning text-dark mt-2 me-1">Intermediate</span>
+                            <!-- Difficulty -->
+                            {% if recipe.get_difficulty_display == "Beginner" %}
+                                <span class="badge bg-success mt-2 me-1">Beginner</span>
 
-{% elif recipe.get_difficulty_display == "Advanced" %}
-    <span class="badge bg-danger mt-2 me-1">Advanced</span>
-{% endif %}
+                            {% elif recipe.get_difficulty_display == "Intermediate" %}
+                                <span class="badge bg-warning text-dark mt-2 me-1">Intermediate</span>
+
+                            {% elif recipe.get_difficulty_display == "Advanced" %}
+                                <span class="badge bg-danger mt-2 me-1">Advanced</span>
+                            {% endif %}
+
+                            <!-- Time -->
+                            {% if recipe.time_required %}
+                            <span class="badge bg-info text-dark me-1">
+                                {{ recipe.time_required }} mins
+                            </span>
+                            {% endif %}
 
 
 

@@ -54,10 +54,12 @@ class RecipeBrowseTest(TestCase):
         recipes = list(response.context['recipes'])
         self.assertEqual(recipes, [self.third_recipe])
 
-    def test_search_with_space_returns_no_recipes(self):
+    def test_search_with_space_returns_all_recipes(self):
         response = self.client.get(self.url, {'q': ' '})
         recipes = list(response.context['recipes'])
-        self.assertEqual(recipes, [])
+        expected_recipes = list(Recipe.objects.all())
+        self.assertEqual(recipes, expected_recipes)
+
 
     def test_search_not_case_sensitive(self):
         response = self.client.get(self.url, {'q': 'cHocolAte'})

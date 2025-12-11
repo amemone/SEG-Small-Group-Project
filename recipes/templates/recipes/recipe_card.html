@@ -19,10 +19,16 @@
                 {% elif recipe.get_difficulty_display == "Advanced" %}
                 <span class="badge bg-danger me-1">Advanced</span>
                 {% endif %}
+
+                {% if recipe.time_required %}
+                <span class="badge bg-info text-dark me-1">
+                    {{ recipe.time_required }} mins
+                </span>
+                {% endif %}
             </div>
 
             <!-- Description -->
-            <p class="card-text mb-3">
+            <p class="card-text mb-2">
                 {{ recipe.description|truncatewords:20 }}
             </p>
 

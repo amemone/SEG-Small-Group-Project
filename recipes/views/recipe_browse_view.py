@@ -14,7 +14,12 @@ def recipe_browse_view(request):
     tags = request.GET.getlist('tag')
     category = request.GET.get('category')
     popular = request.GET.get('popular')
-    unread_count = request.user.notifications.filter(is_read=False).count()
+    time_required = request.GET.get('time')
+    
+    if request.user.is_authenticated:
+        unread_count = request.user.notifications.filter(is_read=False).count()
+    else:
+        unread_count = 0
 
     if user_id:
         user_id = int(user_id)  # convert to integer for comparison in template
@@ -24,7 +29,7 @@ def recipe_browse_view(request):
     all_tags = Tag.objects.all()
     categories = [choice[0] for choice in Recipe.DIFFICULTY_CHOICES]
 
-    if not query and not tags and not user_id and not date and not category:
+    if not query and not tags and not user_id and not date and not category and not time_required:
         recipes = Recipe.objects.all()
 
     if query:
@@ -44,6 +49,9 @@ def recipe_browse_view(request):
 
     if category:
         recipes = recipes.filter(difficulty=category)
+    
+    if time_required:
+        recipes = recipes.filter(time_required=time_required)
 
     # Order by newest first
     #recipes = recipes.order_by('-publication_date')
@@ -61,6 +69,7 @@ def recipe_browse_view(request):
         'selected_tags': tags,
         'selected_user': user_id,
         'selected_date': date,
+        'selected_time': time_required,
         'selected_difficulty': selected_difficulty,
         "unread_count": unread_count,
     })

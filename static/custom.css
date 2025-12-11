@@ -535,6 +535,24 @@ h1 {
     gap: 6px;
 }
 
+.filter-bar input,
+.filter-bar select {
+    padding: 8px 12px;       
+    font-size: 0.95rem;      
+    border-radius: 6px;     
+    border: 1px solid #ccc; 
+    height: 40px;            
+}
+
+.time-select {
+    width: 170px;            
+    padding: 8px 12px;       
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    height: 40px;            
+}
+
 .recipe-card {
     width: 100%;
     min-height: 250px;
@@ -633,5 +651,14 @@ h1 {
     background-color: #f36666 !important;
     color: #fbfbfb !important;
 }
+
+.badge.bg-info {
+    background-color: #57cbeb !important;
+    color: #fbfbfb !important;
+}
+
+
+
+
 
 

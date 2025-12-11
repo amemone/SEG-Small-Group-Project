@@ -144,4 +144,10 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        
+        migrations.AddField(
+            model_name='recipe',
+            name='time_required',
+            field=models.CharField(blank=True, max_length=10, null=True),
+        ),
     ]

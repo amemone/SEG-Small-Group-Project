@@ -20,6 +20,19 @@
                 <option value="{{ u.id }}" {% if selected_user == u.id %}selected{% endif %}>{{ u.username }}</option>
             {% endfor %}
         </select>
+        <select name="time" class="time-select mb-2">
+            <option value="">Time To Cook</option>
+            <option value="5" {% if selected_time == "5" %}selected{% endif %}>5 minutes</option>
+            <option value="10" {% if selected_time == "10" %}selected{% endif %}>10 minutes</option>
+            <option value="15" {% if selected_time == "15" %}selected{% endif %}>15 minutes</option>
+            <option value="20" {% if selected_time == "20" %}selected{% endif %}>20 minutes</option>
+            <option value="30" {% if selected_time == "30" %}selected{% endif %}>30 minutes</option>
+            <option value="45" {% if selected_time == "45" %}selected{% endif %}>45 minutes</option>
+            <option value="60" {% if selected_time == "60" %}selected{% endif %}>1 hour</option>
+            <option value="90" {% if selected_time == "90" %}selected{% endif %}>1 hour 30 minutes</option>
+            <option value="120" {% if selected_time == "120" %}selected{% endif %}>2 hours</option>
+        </select>
+
         <button type="submit" class="btn btn-primary">Search</button>
 
         <!-- Tag Filters -->

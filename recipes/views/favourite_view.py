@@ -21,7 +21,7 @@ def toggle_favourite(request):
         if recipe.user != request.user:
                 Notification.objects.create(
                     user=recipe.user,
-                    text=f"{request.user.username} liked your recipe '{recipe.title}'",
+                    text=f"{request.user.username} favourited your recipe '{recipe.title}'",
                     link=f"/recipe/{recipe.id}/"
                 )
 
