@@ -34,9 +34,14 @@
         </select>
 
         <button type="submit" class="btn btn-primary">Search</button>
-        <button type="submit" name="popular" value="1" class="btn btn-primary">Sort by popularity</button>
-        <button type="submit" class="btn btn-primary">Sort by recent</button>
 
+        <a class="btn btn-primary"
+           href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}popular=1">
+            Sort by popularity
+        </a>
+        <a class="btn btn-primary" href="?{% if request.GET %}{{ request.GET.urlencode|cut:'popular=1'|cut:'popular='|cut:'&popular=1'|cut:'&popular=' }}{% endif %}">
+            Sort by recent
+        </a>
 
         <!-- Tag Filters -->
         <div class="tags-filter">
@@ -61,8 +66,9 @@
         </li>
         {% endfor %}
         <li class="nav-item">
-            <a class="nav-link {% if not selected_difficulty %}active{% endif %}" 
-               href="{% url 'recipe_browse' %}">All</a>
+            <a class="nav-link {% if not selected_difficulty %}active{% endif %}" href="{% url 'recipe_browse' %}{% if request.GET %}?{{ request.GET.urlencode|cut:'difficulty='|cut:'&difficulty=' }}{% endif %}">
+                All
+            </a>
         </li>
     </ul>
 
