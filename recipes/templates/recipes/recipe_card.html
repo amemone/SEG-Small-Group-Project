@@ -8,6 +8,19 @@
             <!-- Title -->
             <h5 class="card-title mb-2">{{ recipe.title }}</h5>
 
+            <!-- Difficulty -->
+            <div class="recipe-badges mb-2">
+                {% if recipe.get_difficulty_display == "Beginner" %}
+                <span class="badge bg-success me-1">Beginner</span>
+
+                {% elif recipe.get_difficulty_display == "Intermediate" %}
+                <span class="badge bg-warning text-dark me-1">Intermediate</span>
+
+                {% elif recipe.get_difficulty_display == "Advanced" %}
+                <span class="badge bg-danger me-1">Advanced</span>
+                {% endif %}
+            </div>
+
             <!-- Description -->
             <p class="card-text mb-3">
                 {{ recipe.description|truncatewords:20 }}

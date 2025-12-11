@@ -619,3 +619,19 @@ h1 {
     padding-right: 10px; 
 }
 
+.badge.bg-success.badge {
+    background-color: #7cc38c !important;
+    color: #fbfbfb !important;
+}
+
+.badge.bg-warning.badge {
+    background-color: #f6a65c !important;
+    color: #fbfbfb !important;
+}
+
+.badge.bg-danger.badge {
+    background-color: #f36666 !important;
+    color: #fbfbfb !important;
+}
+
+
