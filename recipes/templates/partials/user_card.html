@@ -1,6 +1,12 @@
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">{{ user.username }}</h5>
+        <h5 class="card-title">
+            {% if user.username == request.user.username %}
+                <a href="{% url 'view_profile' %}" class="user-link-dark">{{ user.username }}</a>
+            {% else %}
+                <a href="{% url 'user_profile' user.username %}" class="user-link-dark">{{ user.username }}</a>
+            {% endif %}
+        </h5>
         <p class="card-text">Followers: {{ user.get_followers }}<br>Following: {{ user.get_following }}</p>
 
         <a href="{% url 'follow_user' user.username %}" class="btn btn-primary">Follow</a>
