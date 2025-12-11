@@ -63,12 +63,12 @@
     </a>
 
     <!-- Favourites -->
-    <div class="position-absolute favorite-wrapper">
+    <div class="position-absolute favourite-wrapper">
 
         {% if request.user.is_authenticated %}
         
 
-        <form class="favorite-form" method="post" data-recipe-id="{{ recipe.id }}" onclick="event.stopPropagation();">
+        <form class="favourite-form" method="post" data-recipe-id="{{ recipe.id }}" onclick="event.stopPropagation();">
             {% csrf_token %}
             <button type="button" class="btn favourite-btn p-1 border-0 bg-transparent">
                 <i class="bi bi-heart{% if recipe|is_favourited:request.user %}-fill text-danger{% endif %}" 
@@ -101,7 +101,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".favorite-form").forEach(form => {
+        document.querySelectorAll(".favourite-form").forEach(form => {
             if (form.dataset.bound === "1") return;
             form.dataset.bound = "1";
 
@@ -133,7 +133,7 @@
                     icon?.classList.add("bi-heart");
                 }
 
-                const countElement = form.closest(".favorite-wrapper").querySelector(".favourite-count");
+                const countElement = form.closest(".favourite-wrapper").querySelector(".favourite-count");
                 if (countElement) {
                     countElement.textContent = `${data.favourite_count} favourites`;
                 }
