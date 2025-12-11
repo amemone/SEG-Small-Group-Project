@@ -26,6 +26,8 @@ def user_profile_view(request, username):
         'user_followers': paginate_followers(request, profile_user),
         'is_following': is_following,
         'recipes': recipes,
+        'user_avatar': profile_user.gravatar(),
+
     }
 
     return render(request, 'user_profile.html', context)

@@ -44,7 +44,7 @@ class ProfileDisplayViewTest(TestCase):
         self.assertEqual(list(response.context["user_followings"]), [])
         self.assertEqual(list(response.context["user_followers"]), [])
         
-        self.assertContains(response, "<h5>No Users</h5>", html=True)
+        self.assertContains(response, "<b>No Users</b>", html=True)
 
     def test_following_count_increases_when_following_someone(self):
         initial_count = Follow.objects.filter(follower = self.user).count()
@@ -120,7 +120,7 @@ class ProfileDisplayViewTest(TestCase):
     def test_following_empty_page_shows_no_users_message(self):
         response = self.client.get(self.url + "?following_page=99")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "<h5>No Users</h5>", html=True)
+        self.assertContains(response, "<b>No Users</b>", html=True)
 
     def test_profile_display_loads_successfully(self):
         response = self.client.get(self.url)
@@ -178,3 +178,22 @@ class ProfileDisplayViewTest(TestCase):
         second_page = response.context["favourites"]
         self.assertEqual(len(second_page), 4)
         self.assertFalse(second_page.has_next())
+    
+    def test_user_gravatar_returns_valid_url(self):
+        url = self.user.gravatar()
+        self.assertIsInstance(url, str)
+        self.assertIn('gravatar.com/avatar/', url)
+        self.assertIn('size=120', url) 
+
+    def test_profile_context_includes_user_avatar(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('user_avatar', response.context)
+        self.assertEqual(response.context['user_avatar'], self.user.gravatar())
+
+    def test_following_list_renders_gravatar_image(self):
+        Follow.objects.create(follower=self.user, followee=self.second_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        avatar_url = self.second_user.gravatar()
+        self.assertContains(response, f'<img src="{avatar_url}"', html=True)
