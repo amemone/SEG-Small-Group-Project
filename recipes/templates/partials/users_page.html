@@ -7,6 +7,7 @@
         <p>
             {% if u == request.user %}
                 <a href="{% url 'view_profile' %}" class="user-link-dark">
+                    <img src="{{ u.gravatar }}" alt="Avatar" class="rounded-circle" width="30" height="30">
                     {{ u.username }}
                 </a>
             {% else %}
