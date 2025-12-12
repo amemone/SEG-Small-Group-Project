@@ -678,3 +678,13 @@ a.user-link-dark {
 a.user-link-dark:hover {
   color: #000;
 }
+
+select[name="user"] {
+    max-height: 50px !important;
+    overflow-y: auto;
+    display: block;
+}
+
+select[name="user"] option {
+    padding: 5px;
+}

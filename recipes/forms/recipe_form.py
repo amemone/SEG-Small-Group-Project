@@ -42,7 +42,8 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         """Form options."""
         model = Recipe
-        fields = ['title', 'ingredients', 'description', 'visibility', 'tags', 'difficulty', 'time_required']
+        fields = ['title', 'ingredients', 'description',
+                  'visibility', 'tags', 'difficulty', 'time_required']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
