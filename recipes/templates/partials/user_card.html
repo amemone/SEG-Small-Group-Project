@@ -1,9 +1,11 @@
+{% load static %}
 <div class="card mb-3">
-    <div class="card-body">
+    <div class="card-body card-hover">
         <h5 class="card-title">
             {% if user.username == request.user.username %}
                 <a href="{% url 'view_profile' %}" class="user-link-dark">{{ user.username }}</a>
             {% else %}
+                <img src="{{ user.gravatar }}" alt="Avatar" class="rounded-circle" width="30" height="30">
                 <a href="{% url 'user_profile' user.username %}" class="user-link-dark">{{ user.username }}</a>
             {% endif %}
         </h5>
