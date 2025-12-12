@@ -45,5 +45,20 @@
         </div>
     {% endif %}
 
+    {%if not query %}
+        <h3 class="section-header mb-3">Top 5 most followed users:</h3>
+        {% if top_users %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for user in top_users %}
+                <div class="col">
+                {% include 'partials/user_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-muted">No users yet.</p>
+        {% endif %}
+    {% endif %}
+
 </div>
 {% endblock %}
