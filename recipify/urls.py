@@ -51,10 +51,13 @@ urlpatterns = [
     path('user_browse/', user_browse_view, name='user_browse'),
     path('view_profile/', profile_display_view, name='view_profile'),
     path("toggle_favourite/", toggle_favourite, name="toggle_favourite"),
-    path('recipe/<int:pk>/',views.RecipeFullView.as_view(), name='view_recipe'),
+    path('recipe/<int:pk>/', views.RecipeFullView.as_view(), name='view_recipe'),
+    path("recipe/<int:recipe_id>/edit/",
+         views.RecipeEditView.as_view(), name="recipe_edit"),
     path('profile/<str:username>/', user_profile_view, name='user_profile'),
     path('recipes/<int:recipe_id>/', recipe_comment, name='recipe_comment'),
-    path('notification/<int:notification_id>/redirect/', mark_notification_read, name='notification_read'),
+    path('notification/<int:notification_id>/redirect/',
+         mark_notification_read, name='notification_read'),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

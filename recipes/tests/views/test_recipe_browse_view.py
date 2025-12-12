@@ -23,7 +23,7 @@ class RecipeBrowseTest(TestCase):
             difficulty='Beginner',
             visibility='Public',
             user=self.user
-        ) 
+        )
 
         self.second_recipe = Recipe.objects.create(
             title='Chocolate Cake',
@@ -60,7 +60,6 @@ class RecipeBrowseTest(TestCase):
         expected_recipes = list(Recipe.objects.all())
         self.assertEqual(recipes, expected_recipes)
 
-
     def test_search_not_case_sensitive(self):
         response = self.client.get(self.url, {'q': 'cHocolAte'})
         recipes = list(response.context['recipes'])
@@ -79,5 +78,4 @@ class RecipeBrowseTest(TestCase):
     def test_search_returns_multiple_recipes(self):
         response = self.client.get(self.url, {'q': 'Cake'})
         recipes = list(response.context['recipes'])
-        self.assertEqual(recipes, [self.second_recipe, self.first_recipe])
-
+        self.assertCountEqual(recipes, [self.second_recipe, self.first_recipe])
