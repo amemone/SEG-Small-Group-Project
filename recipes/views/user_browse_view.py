@@ -15,7 +15,7 @@ def user_browse_view(request):
     else:
         users = User.objects.filter(username__icontains=query)
 
-    top_users = get_top_following_users(5)
+    top_users = get_top_followed_users(5)
 
     paginate = Paginator(users, 6)
     page_number = request.GET.get('page')
@@ -28,7 +28,7 @@ def user_browse_view(request):
         'query':query,
         })
 
-def get_top_following_users(limit = 5):
+def get_top_followed_users(limit = 5):
     return (
         User.objects.annotate(follower_count=Count('followers', distinct=True))
         .order_by('-follower_count','username')[:limit]
